@@ -171,7 +171,7 @@ function initialize() {
     };
 };
 
-function placeClicked(place, infoWindow) {
+function placeClicked(place) {
     if (place.lastUpdated === null
         || Math.floor((Math.abs(new Date().getTime() - place.lastUpdated)/1000)/60) > 15) {
         // Call the API for info
@@ -197,9 +197,17 @@ function placeClicked(place, infoWindow) {
         viewModel.setPlace(place);
     };
 
-    infoWindow.setContent($("#infoWindow").clone()[0]);
-    content = infoWindow.content;
-    console.log(content);
+    var infoWindow = new google.maps.InfoWindow({
+        // content: $("#infoWindow").clone()[0]
+        content: $('#infoWindow').html()
+    });
+
+    console.log($('#infoWindow'));
+
+    // infoWindow.setContent();
+    // content = infoWindow.content;
+    // console.log(content);
+
     // Open info window
     infoWindow.open(map, place.marker);
 }
@@ -227,11 +235,8 @@ function createMapMarker(searchResults, place) {
     // infoWindows are the little helper windows that open when you click
     // or hover over a pin on a map. They usually contain more information
     // about a location.
-    var infoWindow = new google.maps.InfoWindow({
-        content: name
-    });
 
-    boundPlaceClicked = placeClicked.bind(null, place, infoWindow);
+    boundPlaceClicked = placeClicked.bind(null, place);
 
     // hmmmm, I wonder what this is about...
     google.maps.event.addListener(marker, 'click', boundPlaceClicked);
