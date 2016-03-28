@@ -86,15 +86,15 @@ var ViewModel = function() {
     self.currentPlace = ko.observable(self.placeList()[0]);
     //var currentPlace;
 
-    self.placeInfoApiCall = function(clickedPlace) {
-        var url = 'https://25j4uf5g5h.execute-api.us-west-2.amazonaws.com/active?business_id=' + clickedPlace.businessId();
+    // self.placeInfoApiCall = function(clickedPlace) {
+    //     var url = 'https://25j4uf5g5h.execute-api.us-west-2.amazonaws.com/active?business_id=' + clickedPlace.businessId();
 
-        $.getJSON(url, function(data){
-            console.log(data);
-        }).error(function(){
-            console.log('Request failed');
-        });
-    },
+    //     $.getJSON(url, function(data){
+    //         console.log(data);
+    //     }).error(function(){
+    //         console.log('Request failed');
+    //     });
+    // },
 
     self.setPlace = function(clickedPlace) {
 
@@ -110,7 +110,49 @@ var ViewModel = function() {
         place.ratingSrc = data.rating_img_url;
         place.categories = data.categories;
         place.lastUpdated = new Date();
+    },
+
+    self.placeClicked = function(place) {
+        if (place.lastUpdated === null
+            || Math.floor((Math.abs(new Date().getTime() - place.lastUpdated)/1000)/60) > 15) {
+            // Call the API for info
+            var url = 'https://25j4uf5g5h.execute-api.us-west-2.amazonaws.com/active?business_id=' + place.businessId;
+
+            $.ajax({
+                type: 'GET',
+                url: url,
+                dataType: 'json',
+                success: function(data){
+                    // infoWindow.content = data;
+                    console.log("success" + data);
+                    // fill or update values of the place object
+                    viewModel.fillPlaceValues(place, data);
+                    viewModel.setPlace(place)
+                },
+                async: false,
+                error: function(){
+                    console.log('Request failed');
+                }
+            });
+        } else {
+            viewModel.setPlace(place);
+        };
+
+        var infoWindow = new google.maps.InfoWindow({
+            // content: $("#infoWindow").clone()[0]
+            content: $('#infoWindow').html()
+        });
+
+        console.log($('#infoWindow'));
+
+        // infoWindow.setContent();
+        // content = infoWindow.content;
+        // console.log(content);
+
+        // Open info window
+        infoWindow.open(map, place.marker);
     }
+
 };
 var viewModel = new ViewModel()
 ko.applyBindings(viewModel);
@@ -171,47 +213,6 @@ function initialize() {
     };
 };
 
-function placeClicked(place) {
-    if (place.lastUpdated === null
-        || Math.floor((Math.abs(new Date().getTime() - place.lastUpdated)/1000)/60) > 15) {
-        // Call the API for info
-        var url = 'https://25j4uf5g5h.execute-api.us-west-2.amazonaws.com/active?business_id=' + place.businessId;
-
-        $.ajax({
-            type: 'GET',
-            url: url,
-            dataType: 'json',
-            success: function(data){
-                // infoWindow.content = data;
-                console.log("success" + data);
-                // fill or update values of the place object
-                viewModel.fillPlaceValues(place, data);
-                viewModel.setPlace(place)
-            },
-            async: false,
-            error: function(){
-                console.log('Request failed');
-            }
-        });
-    } else {
-        viewModel.setPlace(place);
-    };
-
-    var infoWindow = new google.maps.InfoWindow({
-        // content: $("#infoWindow").clone()[0]
-        content: $('#infoWindow').html()
-    });
-
-    console.log($('#infoWindow'));
-
-    // infoWindow.setContent();
-    // content = infoWindow.content;
-    // console.log(content);
-
-    // Open info window
-    infoWindow.open(map, place.marker);
-}
-
 function createMapMarker(searchResults, place) {
     // Only take first result
     var searchResult = searchResults[0];
@@ -236,7 +237,7 @@ function createMapMarker(searchResults, place) {
     // or hover over a pin on a map. They usually contain more information
     // about a location.
 
-    boundPlaceClicked = placeClicked.bind(null, place);
+    boundPlaceClicked = viewModel.placeClicked.bind(null, place);
 
     // hmmmm, I wonder what this is about...
     google.maps.event.addListener(marker, 'click', boundPlaceClicked);
