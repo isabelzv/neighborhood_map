@@ -11,7 +11,9 @@ initialPlaces = [
         categories: [],
         search: ["post office"],
         businessId: "us-post-office-boulder-5",
-        lastUpdated: null
+        lastUpdated: null,
+        marker: null,
+        index: 0
     },
     {
         name: "Spruce Confections",
@@ -23,7 +25,9 @@ initialPlaces = [
         categories: [],
         search: ["cafe", "food", "coffee shop"],
         businessId: "spruce-confections-boulder-2",
-        lastUpdated: null
+        lastUpdated: null,
+        marker: null,
+        index: 1
     },
     {
         name: "The Kitchen",
@@ -35,7 +39,9 @@ initialPlaces = [
         categories: [],
         search: ["restaurant, food"],
         businessId: "the-kitchen-next-door-boulder-3",
-        lastUpdated: null
+        lastUpdated: null,
+        marker: null,
+        index: 2
     },
     {
         name: "Eben G. Fine Park",
@@ -47,7 +53,9 @@ initialPlaces = [
         categories: [],
         search: ["park", "playground", "picnic"],
         businessId: "eben-fine-park-boulder",
-        lastUpdated: null
+        lastUpdated: null,
+        marker: null,
+        index: 3
     },
     {
         name: "Thrive",
@@ -59,7 +67,9 @@ initialPlaces = [
         categories: [],
         search: [],
         businessId: "thrive-boulder",
-        lastUpdated: null
+        lastUpdated: null,
+        marker: null,
+        index: 4
     }];
 
 var Place = function(placeData) {
@@ -69,6 +79,7 @@ var Place = function(placeData) {
     this.phone = ko.observable(placeData.phone);
     this.image = ko.observable(placeData.imagesSrc);
     this.ratingScr = ko.observable(placeData.ratingSrc);
+    this.initialPlacesIndex = ko.observable(placeData.index);
     // this.categories = ko.observableArray(placeData.categories);
     // this.search = ko.observableArray(placeData.search);
     // this.businessId = ko.observable(placeData.businessId);
@@ -111,6 +122,17 @@ var ViewModel = function() {
         place.categories = data.categories;
         place.lastUpdated = new Date();
     },
+
+    // helper function to get the initialPlaces item from the KOobservable.
+    self.getPlaceItem = function(koPlace) {
+        viewModel.setPlace(koPlace);
+
+        var index = self.currentPlace().initialPlacesIndex();
+        var placeItem = initialPlaces[index];
+        console.log(placeItem);
+
+        viewModel.placeClicked(placeItem);
+    }
 
     self.placeClicked = function(place) {
         if (place.lastUpdated === null
@@ -218,20 +240,27 @@ function createMapMarker(searchResults, place) {
     var searchResult = searchResults[0];
 
     // The next lines save location data from the search result object to local variables
-    var lat = searchResult.geometry.location.lat(); // latitude from the place service
-    var lon = searchResult.geometry.location.lng(); // longitude from the place service
+    var latitude = searchResult.geometry.location.lat(); // latitude from the place service
+    var longitude = searchResult.geometry.location.lng(); // longitude from the place service
+    var location = {lat: latitude, lng: longitude};
+    console.log(location);
     var name = searchResult.name; // name of the place from the place service
     var bounds = window.mapBounds; // current boundaries of the map window
 
     // marker is an object with additional data about the pin for a single location
     var marker = new google.maps.Marker({
         map: map,
-        position: searchResult.geometry.location,
+        position: location,
         title: name,
-        place: place
+        // place: place
     });
 
+    // Add marker info to place so that infowindow can open on li click
+    // initialPlaces[placeIndx].marker = marker;
     place.marker = marker;
+    console.log(place.marker);
+    console.log(place.marker.position);
+
 
     // infoWindows are the little helper windows that open when you click
     // or hover over a pin on a map. They usually contain more information
