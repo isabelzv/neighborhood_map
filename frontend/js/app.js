@@ -13,6 +13,7 @@ initialPlaces = [
         businessId: "us-post-office-boulder-5",
         lastUpdated: null,
         marker: null,
+        isVisible: false,
         index: 0
     },
     {
@@ -27,6 +28,7 @@ initialPlaces = [
         businessId: "spruce-confections-boulder-2",
         lastUpdated: null,
         marker: null,
+        isVisible: false,
         index: 1
     },
     {
@@ -41,6 +43,7 @@ initialPlaces = [
         businessId: "the-kitchen-next-door-boulder-3",
         lastUpdated: null,
         marker: null,
+        isVisible: false,
         index: 2
     },
     {
@@ -55,6 +58,7 @@ initialPlaces = [
         businessId: "eben-fine-park-boulder",
         lastUpdated: null,
         marker: null,
+        isVisible: false,
         index: 3
     },
     {
@@ -69,10 +73,13 @@ initialPlaces = [
         businessId: "thrive-boulder",
         lastUpdated: null,
         marker: null,
+        isVisible: false,
         index: 4
     }];
 
 var Place = function(placeData) {
+    var self = this;
+
     this.name = ko.observable(placeData.name);
     this.url = ko.observable(placeData.url);
     this.address = ko.observable(placeData.address);
@@ -80,6 +87,9 @@ var Place = function(placeData) {
     this.image = ko.observable(placeData.imagesSrc);
     this.ratingScr = ko.observable(placeData.ratingSrc);
     this.initialPlacesIndex = ko.observable(placeData.index);
+    this.marker = ko.observable(placeData.marker);
+    this.isVisible = ko.observable(false);
+
     // this.categories = ko.observableArray(placeData.categories);
     // this.search = ko.observableArray(placeData.search);
     // this.businessId = ko.observable(placeData.businessId);
@@ -95,17 +105,12 @@ var ViewModel = function() {
     });
 
     self.currentPlace = ko.observable(self.placeList()[0]);
-    //var currentPlace;
 
-    // self.placeInfoApiCall = function(clickedPlace) {
-    //     var url = 'https://25j4uf5g5h.execute-api.us-west-2.amazonaws.com/active?business_id=' + clickedPlace.businessId();
+    self.visiblePlaces = ko.observableArray();
 
-    //     $.getJSON(url, function(data){
-    //         console.log(data);
-    //     }).error(function(){
-    //         console.log('Request failed');
-    //     });
-    // },
+    initialPlaces.forEach(function(place) {
+        self.visiblePlaces.push(place);
+    });
 
     self.setPlace = function(clickedPlace) {
 
@@ -161,43 +166,52 @@ var ViewModel = function() {
         };
 
         var infoWindow = new google.maps.InfoWindow({
-            // content: $("#infoWindow").clone()[0]
             content: $('#infoWindow').html()
         });
 
-        console.log($('#infoWindow'));
-
-        // infoWindow.setContent();
-        // content = infoWindow.content;
-        // console.log(content);
+        // place.marker.markerBounce();
 
         // Open info window
         infoWindow.open(map, place.marker);
-    }
+    },
 
+    self.userInput = ko.observable('hbj');
+
+    // http://stackoverflow.com/questions/29557938/removing-map-pin-with-search
+    self.filterMarkers = ko.computed(function() {
+        var searchInput = self.userInput().toLowerCase();
+        console.log(searchInput);
+
+        return ko.utils.arrayFilter(self.placeList(), function (place) {
+            var doesMatch = place.name().toLowerCase().indexOf(searchInput) >= 0;
+
+            place.isVisible(doesMatch);
+
+            return doesMatch;
+        });
+        // self.visiblePlaces.removeAll();
+
+        // self.placeList.forEach(function(place) {
+        //     place.marker.setMap(null);
+
+        //     if (place.name.toLowerCase().indexOf(searchInput) !== -1) {
+        //         self.visiblePlaces.push(place);
+        //     }
+        // });
+
+        // self.visiblePlaces().forEach(function(place) {
+        //     place.marker.setMap(map);
+        // });
+    });
+
+    // self.markerBounce = function() {
+    //     marker.setAnimation(google.maps.Animation.BOUNCE);
+    //     setTimeout(function(){ marker.setAnimation(null); }, 7500);
+    // };
 };
+
 var viewModel = new ViewModel()
 ko.applyBindings(viewModel);
-
-// var ViewModel = function() {
-//     var self = this;
-
-//     self.catList = ko.observableArray([]);
-
-//     initialCats.forEach(function(catItem) {
-//         self.catList.push(new Cat(catItem) );
-//     });
-
-//     self.currentCat = ko.observable( self.catList()[0] );
-
-//     self.incrementCounter = function() {
-//         self.currentCat().clickCount(self.currentCat().clickCount() + 1);
-//     };
-
-//     self.setCat = function(clickedCat) {
-//         self.currentCat(clickedCat);
-//     };
-// };
 
 var map;
 var service;
@@ -233,6 +247,9 @@ function initialize() {
 
         searchAndCreateMapMarker(request, place);
     };
+
+    // Sets the boundaries of the map based on pin locations
+    window.mapBounds = new google.maps.LatLngBounds();
 };
 
 function createMapMarker(searchResults, place) {
@@ -243,7 +260,6 @@ function createMapMarker(searchResults, place) {
     var latitude = searchResult.geometry.location.lat(); // latitude from the place service
     var longitude = searchResult.geometry.location.lng(); // longitude from the place service
     var location = {lat: latitude, lng: longitude};
-    console.log(location);
     var name = searchResult.name; // name of the place from the place service
     var bounds = window.mapBounds; // current boundaries of the map window
 
@@ -252,32 +268,38 @@ function createMapMarker(searchResults, place) {
         map: map,
         position: location,
         title: name,
-        // place: place
     });
 
+    // marker.addListener('click', viewModel.markerBounce);
+
     // Add marker info to place so that infowindow can open on li click
-    // initialPlaces[placeIndx].marker = marker;
     place.marker = marker;
-    console.log(place.marker);
-    console.log(place.marker.position);
+        // function to filter markers according to search.
+    place.isVisible.subscribe(function(currentState) {
+        if (currentState) {
+          place.marker.setMap(map);
+        } else {
+          place.marker.setMap(null);
+        }
+    });
+
+    place.isVisible(true);
 
 
-    // infoWindows are the little helper windows that open when you click
-    // or hover over a pin on a map. They usually contain more information
-    // about a location.
-
+    // bind the placeClicked function to the place parameter.
     boundPlaceClicked = viewModel.placeClicked.bind(null, place);
 
-    // hmmmm, I wonder what this is about...
+    // on click call placeClicked, which has been bound to the place object
+    // that was used to build that marker.
     google.maps.event.addListener(marker, 'click', boundPlaceClicked);
 
-    // // this is where the pin actually gets added to the map.
-    // // bounds.extend() takes in a map location object
-    // bounds.extend(new google.maps.LatLng(lat, lon));
-    // // fit the map to the new marker
-    // map.fitBounds(bounds);
-    // // center the map
-    // map.setCenter(bounds.getCenter());
+    // this is where the pin actually gets added to the map.
+    // bounds.extend() takes in a map location object
+    bounds.extend(new google.maps.LatLng(latitude, longitude));
+    // fit the map to the new marker
+    map.fitBounds(bounds);
+    // center the map
+    map.setCenter(bounds.getCenter());
 };
 
 // Calls the initializeMap() function when the page loads
@@ -290,14 +312,3 @@ window.addEventListener('load', initialize);
 //     map.fitBounds(mapBounds);
 // });
 
-// var infoWindow = {
-//     init: function() {
-//         this.
-//         info.setAttribute("id", "infoWindow");
-//         $infoWindow = $.("#infoWindow");
-//         layer.innerText="Click to hide!";
-//         $(layer).click(function(){ $(layer).hide('slow'); } );
-//     },
-
-//         infoWindow.setContent(layer); //something like this
-// }
