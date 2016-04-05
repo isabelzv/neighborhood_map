@@ -81,12 +81,14 @@ var Place = function(placeData) {
     var self = this;
 
     this.name = ko.observable(placeData.name);
+    this.businessId = ko.observable(placeData.businessId);
     this.url = ko.observable(placeData.url);
     this.address = ko.observable(placeData.address);
     this.phone = ko.observable(placeData.phone);
     this.image = ko.observable(placeData.imagesSrc);
     this.ratingScr = ko.observable(placeData.ratingSrc);
     this.initialPlacesIndex = ko.observable(placeData.index);
+    this.lastUpdated = ko.observable(placeData.lastUpdated);
     this.marker = ko.observable(placeData.marker);
     this.isVisible = ko.observable(false);
 
@@ -119,13 +121,13 @@ var ViewModel = function() {
     },
 
     self.fillPlaceValues = function(place, data) {
-        place.url = data.mobile_url;
-        place.address = data.location.address[0];
-        place.phone = data.display_phone;
-        place.imagesSrc = data.image_url;
-        place.ratingSrc = data.rating_img_url;
-        place.categories = data.categories;
-        place.lastUpdated = new Date();
+        place.url(data.mobile_url);
+        place.address(data.location.address[0]);
+        place.phone(data.display_phone);
+        // place.imagesSrc(data.image_url);
+        // place.ratingSrc(data.rating_img_url);
+        // place.categories(data.categories);
+        place.lastUpdated(new Date());
     },
 
     // helper function to get the initialPlaces item from the KOobservable.
@@ -140,10 +142,10 @@ var ViewModel = function() {
     }
 
     self.placeClicked = function(place) {
-        if (place.lastUpdated === null
-            || Math.floor((Math.abs(new Date().getTime() - place.lastUpdated)/1000)/60) > 15) {
+        if (place.lastUpdated() === null
+            || Math.floor((Math.abs(new Date().getTime() - place.lastUpdated())/1000)/60) > 15) {
             // Call the API for info
-            var url = 'https://25j4uf5g5h.execute-api.us-west-2.amazonaws.com/active?business_id=' + place.businessId;
+            var url = 'https://25j4uf5g5h.execute-api.us-west-2.amazonaws.com/active?business_id=' + place.businessId();
 
             $.ajax({
                 type: 'GET',
@@ -172,7 +174,7 @@ var ViewModel = function() {
         // place.marker.markerBounce();
 
         // Open info window
-        infoWindow.open(map, place.marker);
+        infoWindow.open(map, place.marker());
     },
 
     self.userInput = ko.observable('hbj');
@@ -235,10 +237,11 @@ function initialize() {
 
     service = new google.maps.places.PlacesService(map);
 
-    for (placeIndx in initialPlaces) {
-        var place = initialPlaces[placeIndx]
-        var placeName = place.name;
-        var businessId = place.businessId.substr(0);
+    viewModel.placeList().forEach(function(place) {
+        // var place = initialPlaces[placeIndx]
+        var placeName = place.name();
+        console.log(placeName);
+        var businessId = place.businessId().substr(0);
         var request = {
             location: boulder,
             radius: '3000',
@@ -246,7 +249,7 @@ function initialize() {
         };
 
         searchAndCreateMapMarker(request, place);
-    };
+    });
 
     // Sets the boundaries of the map based on pin locations
     window.mapBounds = new google.maps.LatLngBounds();
@@ -273,13 +276,15 @@ function createMapMarker(searchResults, place) {
     // marker.addListener('click', viewModel.markerBounce);
 
     // Add marker info to place so that infowindow can open on li click
-    place.marker = marker;
-        // function to filter markers according to search.
+    place.marker(marker);
+
+    // function to filter markers according to search.
+    // http://stackoverflow.com/questions/29557938/removing-map-pin-with-search Janfoeh.
     place.isVisible.subscribe(function(currentState) {
         if (currentState) {
-          place.marker.setMap(map);
+          place.marker().setMap(map);
         } else {
-          place.marker.setMap(null);
+          place.marker().setMap(null);
         }
     });
 
