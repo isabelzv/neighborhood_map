@@ -124,7 +124,7 @@ var ViewModel = function() {
         place.url(data.mobile_url);
         place.address(data.location.address[0]);
         place.phone(data.display_phone);
-        // place.imagesSrc(data.image_url);
+        place.image(data.image_url);
         // place.ratingSrc(data.rating_img_url);
         // place.categories(data.categories);
         place.lastUpdated(new Date());
@@ -235,7 +235,7 @@ function initialize() {
         var businessId = place.businessId().substr(0);
         var request = {
             location: boulder,
-            radius: '3000',
+            radius: '4000',
             name: placeName
         };
 
