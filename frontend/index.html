@@ -29,11 +29,6 @@
                         <div data-bind="text: name, click: $parent.placeClicked"></div>
                     </li>
                 </ul>
-                <div data-bind="with: currentPlace">
-                    <h2 data-bind="text: name"></h2>
-                    <a data-bind="text: url"></a>
-
-                </div>
             </div>
         </div>
     </div>
@@ -41,6 +36,7 @@
         <h2 data-bind="text: name"></h2>
         <div data-bind="text: address"></div>
         <div data-bind="text: phone"></div>
+        <a data-bind="text: url"></a>
     </div>
     <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBgeijN84n5eVGRiv11FTaxUqHGPwMuJmU&libraries=places"
     async defer></script>
