@@ -171,13 +171,13 @@ var ViewModel = function() {
             content: $('#infoWindow').html()
         });
 
-        // place.marker.markerBounce();
+        // place.marker().self.markerBounce();
 
         // Open info window
         infoWindow.open(map, place.marker());
     },
 
-    self.userInput = ko.observable('hbj');
+    self.userInput = ko.observable('');
 
     // http://stackoverflow.com/questions/29557938/removing-map-pin-with-search
     self.filterMarkers = ko.computed(function() {
@@ -191,33 +191,22 @@ var ViewModel = function() {
 
             return doesMatch;
         });
-        // self.visiblePlaces.removeAll();
-
-        // self.placeList.forEach(function(place) {
-        //     place.marker.setMap(null);
-
-        //     if (place.name.toLowerCase().indexOf(searchInput) !== -1) {
-        //         self.visiblePlaces.push(place);
-        //     }
-        // });
-
-        // self.visiblePlaces().forEach(function(place) {
-        //     place.marker.setMap(map);
-        // });
     });
-
-    // self.markerBounce = function() {
-    //     marker.setAnimation(google.maps.Animation.BOUNCE);
-    //     setTimeout(function(){ marker.setAnimation(null); }, 7500);
-    // };
 };
 
 var viewModel = new ViewModel()
 ko.applyBindings(viewModel);
 
+
+function markerBounce(marker) {
+    marker.setAnimation(google.maps.Animation.BOUNCE);
+    setTimeout(function(){ marker.setAnimation(null); }, 7500);
+};
+
 var map;
 var service;
 var infowindow;
+// var marker;
 
 function searchAndCreateMapMarker(request, place) {
     service.nearbySearch(request, function(result, status) {
@@ -273,7 +262,10 @@ function createMapMarker(searchResults, place) {
         title: name,
     });
 
-    // marker.addListener('click', viewModel.markerBounce);
+    // bind the markerBounce function to the place parameter.
+    boundMarkerBounce = markerBounce.bind(null, marker);
+
+    marker.addListener('click', boundMarkerBounce);
 
     // Add marker info to place so that infowindow can open on li click
     place.marker(marker);
@@ -306,6 +298,7 @@ function createMapMarker(searchResults, place) {
     // center the map
     map.setCenter(bounds.getCenter());
 };
+
 
 // Calls the initializeMap() function when the page loads
 window.addEventListener('load', initialize);
