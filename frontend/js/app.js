@@ -171,7 +171,8 @@ var ViewModel = function() {
             content: $('#infoWindow').html()
         });
 
-        // place.marker().self.markerBounce();
+        // bounce marker
+        self.markerBounce(place.marker());
 
         // Open info window
         infoWindow.open(map, place.marker());
@@ -192,16 +193,17 @@ var ViewModel = function() {
             return doesMatch;
         });
     });
+
+    self.markerBounce = function(marker) {
+        marker.setAnimation(google.maps.Animation.BOUNCE);
+        setTimeout(function(){ marker.setAnimation(null); }, 1400);
+    };
 };
 
 var viewModel = new ViewModel()
 ko.applyBindings(viewModel);
 
 
-function markerBounce(marker) {
-    marker.setAnimation(google.maps.Animation.BOUNCE);
-    setTimeout(function(){ marker.setAnimation(null); }, 7500);
-};
 
 var map;
 var service;
@@ -263,9 +265,9 @@ function createMapMarker(searchResults, place) {
     });
 
     // bind the markerBounce function to the place parameter.
-    boundMarkerBounce = markerBounce.bind(null, marker);
+    // boundMarkerBounce = markerBounce.bind(null, marker);
 
-    marker.addListener('click', boundMarkerBounce);
+    // marker.addListener('click', boundMarkerBounce);
 
     // Add marker info to place so that infowindow can open on li click
     place.marker(marker);
