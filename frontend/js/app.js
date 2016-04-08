@@ -1,5 +1,9 @@
 // var package = require('oauth-signature');
 
+// grab infowindow elem for error handling purposes
+var $infoWindowElem = $('#infoWindow');
+
+var
 initialPlaces = [
     {
         name: "Boulder Post Office",
@@ -139,7 +143,16 @@ var ViewModel = function() {
         console.log(placeItem);
 
         viewModel.placeClicked(placeItem);
-    }
+    },
+
+    self.yelpRequestTimeout = function() {
+        setTimeout(function(){
+            //$infoWindowElem.text("Sorry, yelp info can't be displayed right now. Try again in a bit.");
+            console.log("yelp info can't be displayed right now");
+            $infoWindowElem.text("");
+            $infoWindowElem.text("yelp info can't be displayed right now");
+        }, 8000);
+    },
 
     self.placeClicked = function(place) {
         if (place.lastUpdated() === null
@@ -156,13 +169,13 @@ var ViewModel = function() {
                     console.log("success" + data);
                     // fill or update values of the place object
                     viewModel.fillPlaceValues(place, data);
-                    viewModel.setPlace(place)
+                    viewModel.setPlace(place);
+                    // clearTimeout(viewModel.yelpRequestTimeout);
                 },
                 async: false,
-                error: function(){
-                    console.log('Request failed');
-                }
-            });
+            }).error(function() {
+                $infoWindowElem.text("oops, something went wrong. Yelp info can't be displayed right now. Try again later.");
+            })
         } else {
             viewModel.setPlace(place);
         };
