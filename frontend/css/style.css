@@ -1,3 +1,41 @@
 #map {
 	height: 400px;
+};
+
+#infoWindow {
+	width: 200px;
+	height: 200px;
+	padding: 15px;
 }
+
+li {
+	list-style: none;
+}
+
+ul {
+	padding: 0px;
+}
+
+h2 {
+	margin-top: 0px;
+}
+
+.nameAddressPhone {
+	padding-left: 0px;
+	padding-right: 0px;
+}
+
+.searchBar {
+	margin-top: 20px;
+	margin-bottom: 10px;
+	padding-left: 15px;
+	width: 100%;
+}
+
+.form-control {
+	width: 100%;
+}
+
+/*.infoPic {
+	padding-left: 0px;
+}*/

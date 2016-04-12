@@ -101,6 +101,8 @@ var Place = function(placeData) {
     // this.businessId = ko.observable(placeData.businessId);
 };
 
+var map;
+
 var ViewModel = function() {
     var self = this;
 
@@ -181,8 +183,11 @@ var ViewModel = function() {
         };
 
         var infoWindow = new google.maps.InfoWindow({
-            content: $('#infoWindow').html()
+            content: $('#infoWindow').html(),
+            maxWidth: 270
         });
+
+        map.setCenter(place.marker().getPosition());
 
         // bounce marker
         self.markerBounce(place.marker());
@@ -218,7 +223,6 @@ ko.applyBindings(viewModel);
 
 
 
-var map;
 var service;
 var infowindow;
 // var marker;
@@ -261,6 +265,7 @@ function initialize() {
 
 function createMapMarker(searchResults, place) {
     // Only take first result
+    var self = this;
     var searchResult = searchResults[0];
 
     // The next lines save location data from the search result object to local variables
@@ -299,10 +304,16 @@ function createMapMarker(searchResults, place) {
 
 
     // bind the placeClicked function to the place parameter.
-    boundPlaceClicked = viewModel.placeClicked.bind(null, place);
+    self.boundPlaceClicked = viewModel.placeClicked.bind(null, place);
 
     // on click call placeClicked, which has been bound to the place object
     // that was used to build that marker.
+    // google.maps.event.addListener(marker, 'click', function(){
+    //     boundPlaceClicked;
+    //     map.setCenter(marker.getPosition());
+    // });
+
+
     google.maps.event.addListener(marker, 'click', boundPlaceClicked);
 
     // this is where the pin actually gets added to the map.
@@ -324,4 +335,10 @@ window.addEventListener('load', initialize);
 //     //Make sure the map bounds get updated on page resize
 //     map.fitBounds(mapBounds);
 // });
+
+$('#searchBar').click(function() {
+   //optionally remove the 500 (which is time in milliseconds) of the
+   //scrolling animation to remove the animation and make it instant
+   $.scrollTo($('.searchBar'), 500);
+});
 
