@@ -2,8 +2,8 @@
 // grab infowindow elem for error handling purposes
 var $infoWindowElem = $('#infoWindow');
 
-var
-initialPlaces = [
+// essential initial place info.
+var initialPlaces = [
     {
         name: "Boulder Post Office",
         businessId: "us-post-office-boulder-5"
@@ -25,6 +25,8 @@ initialPlaces = [
         businessId: "thrive-boulder"
     }];
 
+// create ko.object with the initial place and empty fields.
+// empty feilds neccessary for #infoWindow bindings
 var Place = function(placeData) {
     var self = this;
 
@@ -52,50 +54,42 @@ var ViewModel = function() {
 
     self.currentPlace = ko.observable(self.placeList()[0]);
 
+    // places that have visible markers and li
     self.visiblePlaces = ko.observableArray();
 
+    // push all place objects into visible places to start.
     initialPlaces.forEach(function(place) {
         self.visiblePlaces.push(place);
     });
 
+    // helper function for placeClicked
+    // change place occupying infoWindow
     self.setPlace = function(clickedPlace) {
-
-        // self.currentPlace = new Place(clickedPlace);
         self.currentPlace(clickedPlace);
     },
 
+    // helper function for placeClicked
+    // take data from the API response and use it to fill in place objects fields.
     self.fillPlaceValues = function(place, data) {
         place.url(self.makeDisplayUrl(data.mobile_url));
         place.address(data.location.address[0]);
         place.phone(data.display_phone);
         place.image(data.image_url);
+
+        // create a new time for last updated.
+        // used to check if cache needs refreshing.
         place.lastUpdated(new Date());
     },
 
+    // helper function for fillPlaceValues to shorten response url
     self.makeDisplayUrl = function(url) {
         var endIndex = url.indexOf('?');
         return url.substr(0, endIndex);
     };
 
-    // helper function to get the initialPlaces item from the KOobservable.
-    // self.getPlaceItem = function(koPlace) {
-    //     viewModel.setPlace(koPlace);
-
-    //     var index = self.currentPlace().initialPlacesIndex();
-    //     var placeItem = initialPlaces[index];
-
-    //     viewModel.placeClicked(placeItem);
-    // },
-
-    self.yelpRequestTimeout = function() {
-        setTimeout(function(){
-            //$infoWindowElem.text("Sorry, yelp info can't be displayed right now. Try again in a bit.");
-            $infoWindowElem.text("");
-            $infoWindowElem.text("yelp info can't be displayed right now");
-        }, 8000);
-    },
-
+    // main function to call API, fill in place info and open info window
     self.placeClicked = function(place) {
+        // check if the API was updated less than 15 minutes ago.
         if (place.lastUpdated() === null
             || Math.floor((Math.abs(new Date().getTime() - place.lastUpdated())/1000)/60) > 15) {
             // Call the API for info
@@ -108,19 +102,25 @@ var ViewModel = function() {
                 success: function(data){
                     // fill or update values of the place object
                     viewModel.fillPlaceValues(place, data);
+                    // populate #infoWindow with place clicked
                     viewModel.setPlace(place);
-                    // clearTimeout(viewModel.yelpRequestTimeout);
                 },
+                // force ajax request to complete before moving on.
                 async: false,
+            // handle error
             }).error(function() {
                 $infoWindowElem.text("oops, something went wrong. Yelp info can't be displayed right now. Try again later.");
             })
         } else {
+            // if no new API call is needed then just set #infoWindow to display the place clicked
             viewModel.setPlace(place);
         };
 
+        // create a new infoWindow
         var infoWindow = new google.maps.InfoWindow({
+            // set the content to html element with id infoWindow
             content: $('#infoWindow').html(),
+            // set maxWidth to 300px (over riding 200px)
             maxWidth: 300
         });
 
@@ -134,24 +134,30 @@ var ViewModel = function() {
         infoWindow.open(map, place.marker());
     },
 
+    // create ko.observable bound with search bar.
     self.userInput = ko.observable('');
 
     // http://stackoverflow.com/questions/29557938/removing-map-pin-with-search
     self.filterMarkers = ko.computed(function() {
         var searchInput = self.userInput().toLowerCase();
-        console.log(searchInput);
 
+        // return a filtered version of the placeList observibleArray with only
+        // places where names match userInput
         return ko.utils.arrayFilter(self.placeList(), function (place) {
+            // boolean depending on whether string is found in place name
             var doesMatch = place.name().toLowerCase().indexOf(searchInput) >= 0;
 
+            // sets isVisible to true or false depending on whether match is found
             place.isVisible(doesMatch);
 
             return doesMatch;
         });
     });
 
+    // bounce marker twice
     self.markerBounce = function(marker) {
         marker.setAnimation(google.maps.Animation.BOUNCE);
+        // time it takes to bounce marker twice.
         setTimeout(function(){ marker.setAnimation(null); }, 1400);
     };
 };
