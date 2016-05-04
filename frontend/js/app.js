@@ -1,4 +1,3 @@
-// var package = require('oauth-signature');
 
 // grab infowindow elem for error handling purposes
 var $infoWindowElem = $('#infoWindow');
@@ -7,78 +6,23 @@ var
 initialPlaces = [
     {
         name: "Boulder Post Office",
-        url: "",
-        address: "Boulder Post Office",
-        phone: "",
-        imagesSrc: "",
-        ratingSrc: "",
-        categories: [],
-        search: ["post office"],
-        businessId: "us-post-office-boulder-5",
-        lastUpdated: null,
-        marker: null,
-        isVisible: false,
-        index: 0
+        businessId: "us-post-office-boulder-5"
     },
     {
         name: "Spruce Confections",
-        url: "",
-        address: "Spruce Confections",
-        phone: "",
-        imagesSrc: "",
-        ratingSrc: "",
-        categories: [],
-        search: ["cafe", "food", "coffee shop"],
-        businessId: "spruce-confections-boulder-2",
-        lastUpdated: null,
-        marker: null,
-        isVisible: false,
-        index: 1
+        businessId: "spruce-confections-boulder-2"
     },
     {
         name: "The Kitchen",
-        url: "",
-        address: "1039 Pearl St, Boulder, CO 80302",
-        phone: "",
-        imagesSrc: "",
-        ratingSrc: "",
-        categories: [],
-        search: ["restaurant, food"],
-        businessId: "the-kitchen-next-door-boulder-3",
-        lastUpdated: null,
-        marker: null,
-        isVisible: false,
-        index: 2
+        businessId: "the-kitchen-next-door-boulder-3"
     },
     {
         name: "Eben G. Fine Park",
-        url: "",
-        address: "Eben G. Fine Park",
-        phone: "",
-        imagesSrc: "",
-        ratingSrc: "",
-        categories: [],
-        search: ["park", "playground", "picnic"],
-        businessId: "eben-fine-park-boulder",
-        lastUpdated: null,
-        marker: null,
-        isVisible: false,
-        index: 3
+        businessId: "eben-fine-park-boulder"
     },
     {
         name: "Thrive",
-        url: "",
-        address: "1509 Arapahoe Ave, Boulder, CO 80302",
-        phone: "",
-        imagesSrc: "",
-        ratingSrc: "",
-        categories: [],
-        search: [],
-        businessId: "thrive-boulder",
-        lastUpdated: null,
-        marker: null,
-        isVisible: false,
-        index: 4
+        businessId: "thrive-boulder"
     }];
 
 var Place = function(placeData) {
@@ -86,19 +30,13 @@ var Place = function(placeData) {
 
     this.name = ko.observable(placeData.name);
     this.businessId = ko.observable(placeData.businessId);
-    this.url = ko.observable(placeData.url);
-    this.address = ko.observable(placeData.address);
-    this.phone = ko.observable(placeData.phone);
-    this.image = ko.observable(placeData.imagesSrc);
-    this.ratingScr = ko.observable(placeData.ratingSrc);
-    this.initialPlacesIndex = ko.observable(placeData.index);
-    this.lastUpdated = ko.observable(placeData.lastUpdated);
-    this.marker = ko.observable(placeData.marker);
+    this.url = ko.observable(null);
+    this.address = ko.observable(null);
+    this.phone = ko.observable(null);
+    this.image = ko.observable(null);
+    this.lastUpdated = ko.observable(null);
+    this.marker = ko.observable(null);
     this.isVisible = ko.observable(false);
-
-    // this.categories = ko.observableArray(placeData.categories);
-    // this.search = ko.observableArray(placeData.search);
-    // this.businessId = ko.observable(placeData.businessId);
 };
 
 var map;
@@ -127,30 +65,31 @@ var ViewModel = function() {
     },
 
     self.fillPlaceValues = function(place, data) {
-        place.url(data.mobile_url);
+        place.url(self.makeDisplayUrl(data.mobile_url));
         place.address(data.location.address[0]);
         place.phone(data.display_phone);
         place.image(data.image_url);
-        // place.ratingSrc(data.rating_img_url);
-        // place.categories(data.categories);
         place.lastUpdated(new Date());
     },
 
+    self.makeDisplayUrl = function(url) {
+        var endIndex = url.indexOf('?');
+        return url.substr(0, endIndex);
+    };
+
     // helper function to get the initialPlaces item from the KOobservable.
-    self.getPlaceItem = function(koPlace) {
-        viewModel.setPlace(koPlace);
+    // self.getPlaceItem = function(koPlace) {
+    //     viewModel.setPlace(koPlace);
 
-        var index = self.currentPlace().initialPlacesIndex();
-        var placeItem = initialPlaces[index];
-        console.log(placeItem);
+    //     var index = self.currentPlace().initialPlacesIndex();
+    //     var placeItem = initialPlaces[index];
 
-        viewModel.placeClicked(placeItem);
-    },
+    //     viewModel.placeClicked(placeItem);
+    // },
 
     self.yelpRequestTimeout = function() {
         setTimeout(function(){
             //$infoWindowElem.text("Sorry, yelp info can't be displayed right now. Try again in a bit.");
-            console.log("yelp info can't be displayed right now");
             $infoWindowElem.text("");
             $infoWindowElem.text("yelp info can't be displayed right now");
         }, 8000);
@@ -167,8 +106,6 @@ var ViewModel = function() {
                 url: url,
                 dataType: 'json',
                 success: function(data){
-                    // infoWindow.content = data;
-                    console.log("success" + data);
                     // fill or update values of the place object
                     viewModel.fillPlaceValues(place, data);
                     viewModel.setPlace(place);
@@ -184,9 +121,10 @@ var ViewModel = function() {
 
         var infoWindow = new google.maps.InfoWindow({
             content: $('#infoWindow').html(),
-            maxWidth: 270
+            maxWidth: 300
         });
 
+        // center the map on the marker
         map.setCenter(place.marker().getPosition());
 
         // bounce marker
@@ -248,7 +186,6 @@ function initialize() {
     viewModel.placeList().forEach(function(place) {
         // var place = initialPlaces[placeIndx]
         var placeName = place.name();
-        console.log(placeName);
         var businessId = place.businessId().substr(0);
         var request = {
             location: boulder,
