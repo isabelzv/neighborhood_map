@@ -2,27 +2,43 @@
 	height: 400px;
 };
 
+/* div to wrap infowindow in to hide it off-screen */
+.outer {
+	overflow: hidden;
+	position: relative;
+}
+
 #infoWindow {
-	width: 200px;
+	position: absolute;
 	height: 200px;
 	padding: 15px;
+	right: -50px;
+	top: -200px;
 }
 
 li {
 	list-style: none;
+	width: 100%;
 }
 
 ul {
-	padding: 0px;
+	margin-left: 0px;
+	padding-left: 0px;
 }
 
 h2 {
 	margin-top: 0px;
+	padding-right: 10px;
 }
 
 .nameAddressPhone {
-	padding-left: 0px;
-	padding-right: 0px;
+	margin-left: 10px;
+	padding-right: 10px;
+	max-width: 100%;
+}
+
+.url {
+	padding-left: 15px;
 }
 
 .searchBar {
@@ -36,6 +52,8 @@ h2 {
 	width: 100%;
 }
 
-/*.infoPic {
-	padding-left: 0px;
-}*/
+.infoPic {
+	width: 100px;
+	padding-left: 10px;
+	padding-right: 10px;
+}
