@@ -24,8 +24,8 @@ coverage
 build/Release
 
 # Dependency directory
-*/node_modules
-
+yelp_lambda/node_modules
+frontend/node_modules
 # Optional npm cache directory
 .npm
 
