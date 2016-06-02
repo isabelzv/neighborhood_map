@@ -1,3 +1,59 @@
 #map {
 	height: 400px;
+};
+
+/* div to wrap infowindow in to hide it off-screen */
+.outer {
+	overflow: hidden;
+	position: relative;
+}
+
+#infoWindow {
+	position: absolute;
+	height: 200px;
+	padding: 15px;
+	right: -50px;
+	top: -200px;
+}
+
+li {
+	list-style: none;
+	width: 100%;
+}
+
+ul {
+	margin-left: 0px;
+	padding-left: 0px;
+}
+
+h2 {
+	margin-top: 0px;
+	padding-right: 10px;
+}
+
+.nameAddressPhone {
+	margin-left: 10px;
+	padding-right: 10px;
+	max-width: 100%;
+}
+
+.url {
+	padding-left: 15px;
+}
+
+.searchBar {
+	margin-top: 20px;
+	margin-bottom: 10px;
+	padding-left: 15px;
+	width: 100%;
+}
+
+.form-control {
+	width: 100%;
+}
+
+.infoPic {
+	width: 100px;
+	padding-left: 10px;
+	padding-right: 10px;
 }
