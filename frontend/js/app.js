@@ -1,4 +1,7 @@
 
+// declare gloabal map variable
+var map;
+
 // grab infowindow elem for error handling purposes
 var $infoWindowElem = $('#infoWindow');
 
@@ -40,8 +43,6 @@ var Place = function(placeData) {
     this.marker = ko.observable(null);
     this.isVisible = ko.observable(false);
 };
-
-var map;
 
 var ViewModel = function() {
     var self = this;

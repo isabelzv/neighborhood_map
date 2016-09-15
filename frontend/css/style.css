@@ -50,7 +50,10 @@ h2 {
 }
 
 .form-control {
-	width: 100%;
+	width: 90%;
+	border: 1px solid black;/*
+	padding: 10px;*/
+	margin: 10px;
 }
 
 .infoPic {
@@ -59,15 +62,17 @@ h2 {
 	padding-right: 10px;
 }
 
-.placeList {
-	/*position: absolute;*/
-	/*left: -200px;*/
-/*	width: 200px;
-	height: 100px;*/
-}
+/*.placeList {
+	position: absolute;
+	left: -200px;
+	width: 200px;
+	height: 100px;
+}*/
 
 .hamburger {
-	float: left;
+	/*float: left;*/
+	margin-left: 10px;
+	margin-top: 5px;
 }
 
 .placeListVisible {
@@ -75,7 +80,8 @@ h2 {
 }
 
 .open {
-	display: block;
-	left: 300px;
+	display: block;/*
+	left: 300px;*/
 	color: red;
+	margin: 10px;
 }
