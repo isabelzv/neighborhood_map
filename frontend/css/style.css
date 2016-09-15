@@ -24,6 +24,7 @@ li {
 ul {
 	margin-left: 0px;
 	padding-left: 0px;
+	text-align: left;
 }
 
 h2 {
@@ -56,4 +57,25 @@ h2 {
 	width: 100px;
 	padding-left: 10px;
 	padding-right: 10px;
+}
+
+.placeList {
+	/*position: absolute;*/
+	/*left: -200px;*/
+/*	width: 200px;
+	height: 100px;*/
+}
+
+.hamburger {
+	float: left;
+}
+
+.placeListVisible {
+	display: none
+}
+
+.open {
+	display: block;
+	left: 300px;
+	color: red;
 }

@@ -2,41 +2,55 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="viewport" content="width=device-width, height=device-height, initial-scale=1">
     <title>Neighborhood Map</title>
+    <link rel="stylesheet" href="images">
     <link rel="stylesheet" href="Bootstrap/css/bootstrap.css">
     <link rel="stylesheet" type="text/css" href="Bootstrap/css/bootstrap-theme.css">
     <link rel="stylesheet" type="text/css" href="css/style.css">
     <script src="js/knockout_v3.4.0.js"></script>
-    <script src="node_modules/oauth-signature/dist/oauth-signature.js"></script>
+    <!--<script src="node_modules/oauth-signature/dist/oauth-signature.js"></script>-->
 
 </head>
 <body>
     <div class="container">
         <header class="row text-center">
             <h1 class="col-xs-12"> Neighborhood Map </h1>
-        </header>
-        <div class="row">
-            <div class="col-xs-12 searchBar">
-                <a href="#searchBar">
-                    <div class="input-group" id="searchBar">
-                        <input type="text" class="form-control" placeholder="Search" aria-describedby="basic-addon1" data-bind="textInput: userInput"></input>
-                    </div>
-                </a>
+
+            <div class="row">
+                <div class="col-xs-12 searchBar">
+                    <a href="#searchBar">
+                        <div class="input-group" id="searchBar">
+                            <input type="text" class="form-control" placeholder="Search" aria-describedby="basic-addon1" data-bind="textInput: userInput"></input>
+                        </div>
+                    </a>
+                </div>
             </div>
-        </div>
+
+                <div class="col-xs-12">
+                    <img src="images/hamburger.svg" alt="MENU" class="hamburger" data-bind="click: togglePlaceList, css: {placeListVisible: placeListVisible() == true}"></img>
+                    <div class="placeListVisible" data-bind="css: {open: placeListVisible() == true}">
+                    <ul class="placeList" data-bind="foreach: placeList">
+                        <li data-bind="visible: isVisible">
+                            <div data-bind="text: name, click: $parent.placeClicked"></div>
+                        </li>
+                    </ul>
+                    </div>
+                </div>
+
+        </header>
         <div class="row">
             <div class="col-xs-12" id="map"></div>
         </div>
-        <div class="row">
-            <div class="col-xs-12">
+<!--         <div class="row">
+            <div class="col-xs-12" data-bind="css: open">
                 <ul data-bind="foreach: placeList">
                     <li data-bind="visible: isVisible">
                         <div data-bind="text: name, click: $parent.placeClicked"></div>
                     </li>
                 </ul>
             </div>
-        </div>
+        </div> -->
     </div>
 
     <div id="infoWindow" class="container" data-bind="with: currentPlace">

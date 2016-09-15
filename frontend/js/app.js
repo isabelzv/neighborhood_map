@@ -62,6 +62,15 @@ var ViewModel = function() {
         self.visiblePlaces.push(place);
     });
 
+    // obsevable to hide list of places or hise behind hamburger
+    self.placeListVisible = ko.observable(false);
+
+    // function to toggle placeList
+    self.togglePlaceList = function() {
+        self.placeListVisible(!self.placeListVisible());
+        console.log(self.placeListVisible());
+    };
+
     // helper function for placeClicked
     // change place occupying infoWindow
     self.setPlace = function(clickedPlace) {
