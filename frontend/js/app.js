@@ -1,6 +1,8 @@
 
-// declare gloabal map variable
+// declare gloabal variables
 var map;
+var infoWindow;
+
 
 // grab infowindow elem for error handling purposes
 var $infoWindowElem = $('#infoWindow');
@@ -105,26 +107,24 @@ var ViewModel = function() {
             // Call the API for info
             var url = 'https://25j4uf5g5h.execute-api.us-west-2.amazonaws.com/active?business_id=' + place.businessId();
 
-            $.ajax({
+            $.when($.ajax({
                 type: 'GET',
                 url: url,
-                dataType: 'json',
-                success: function(data){
+                dataType: 'json'
+                // force ajax request to complete before moving on.
+                // async: false,
+            // handle error
+            // }).error(function() {
+                // $infoWindowElem.text("oops, something went wrong. Yelp info can't be displayed right now. Try again later.");
+            })).done(function(place, data) {
                     // fill or update values of the place object
                     viewModel.fillPlaceValues(place, data);
                     // populate #infoWindow with place clicked
                     viewModel.setPlace(place);
-                },
-                // force ajax request to complete before moving on.
-                async: false,
-            // handle error
-            }).error(function() {
-                $infoWindowElem.text("oops, something went wrong. Yelp info can't be displayed right now. Try again later.");
-            })
-        } else {
+            })}; // else {
             // if no new API call is needed then just set #infoWindow to display the place clicked
-            viewModel.setPlace(place);
-        };
+            // viewModel.setPlace(place);
+        // };
 
         // create a new infoWindow
         var infoWindow = new google.maps.InfoWindow({
@@ -178,7 +178,6 @@ ko.applyBindings(viewModel);
 
 
 var service;
-var infowindow;
 // var marker;
 
 function searchAndCreateMapMarker(request, place) {
