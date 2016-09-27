@@ -47,25 +47,7 @@
         </div>
     </div>
 
-    <div id="infoWindow" class="container" data-bind="with: currentPlace">
-        <div class="row">
-            <div class="col-xs-6 infoPic">
-                <img class="img-center" src="" alt="image of place" data-bind="attr: {src: image}">
-            </div>
-            <div class="col-xs-6 nameAddressPhone">
-                <ul>
-                    <li>
-                        <h2 data-bind="text: name"></h2>
-                    </li>
-                    <li data-bind="text: address"></li>
-                    <li data-bind="text: phone"></li>
-                </ul>
-            </div>
-        </div>
-        <div class="row">
-            <a data-bind="text: url">Website</a>
-        </div>
-    </div>
+
     <script src="js/jquery_min.js"></script>
     <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBgeijN84n5eVGRiv11FTaxUqHGPwMuJmU&libraries=places"
     async defer></script>
