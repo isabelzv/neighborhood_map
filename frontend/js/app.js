@@ -43,7 +43,7 @@ var Place = function(placeData) {
     this.image = ko.observable(null);
     this.lastUpdated = ko.observable(null);
     this.marker = ko.observable(null);
-    this.isVisible = ko.observable(false);
+    this.isVisible = ko.observable(true);
 };
 
 var ViewModel = function() {
@@ -72,7 +72,7 @@ var ViewModel = function() {
     self.togglePlaceList = function() {
         self.placeListVisible(!self.placeListVisible());
         console.log(self.placeListVisible());
-    };
+    },
 
     // helper function for placeClicked
     // change place occupying infoWindow
@@ -97,63 +97,68 @@ var ViewModel = function() {
     self.makeDisplayUrl = function(url) {
         var endIndex = url.indexOf('?');
         return url.substr(0, endIndex);
-    };
+    },
 
     // main function to call API, fill in place info and open info window
     self.placeClicked = function(place) {
+        // OPEN INFOWINDOW AT MARKER
+        infoWindow.open(map, place.marker());
         // check if the API was updated less than 15 minutes ago.
         if (place.lastUpdated() === null
             || Math.floor((Math.abs(new Date().getTime() - place.lastUpdated())/1000)/60) > 15) {
             // Call the API for info
             var url = 'https://25j4uf5g5h.execute-api.us-west-2.amazonaws.com/active?business_id=' + place.businessId();
 
-            // var place = place;
-            console.log("place = ", place);
-
-            $.when($.ajax({
+            $.ajax({
                 type: 'GET',
                 url: url,
-                dataType: 'json'
-                // success: function(data){
-                // // fill or update values of the place object
-                // viewModel.fillPlaceValues(place, data);
-                // // populate #infoWindow with place clicked
-                // viewModel.setPlace(place);
-                // },
-                // force ajax request to complete before moving on.
-                // async: false,
-            // handle error
-            // }).error(function() {
-                // $infoWindowElem.text("oops, something went wrong. Yelp info can't be displayed right now. Try again later.");
-            })).done(function(data, place) {
-                    console.log("data = ", data);
-                    console.log("place = ", place);
-                    // fill or update values of the place object
-                    viewModel.fillPlaceValues(place, data);
-                    // populate #infoWindow with place clicked
-                    // viewModel.setPlace(place);
-            })}; // else {
+                dataType: 'json',
+                success: function(data){
+                    // INFOWINDOW.SETCONTENT WITH DATA VALUES
+                    infoWindow.setContent('<h1>' + data.name + '</h1>' + '<ul>' +
+                        '<li>' + data.location.address[0] + '</li>' +
+                        '<li>' + data.display_phone + '</li>' + '</ul>' +
+                        '<a' + data.url + '>Website</a>' +
+                        '<img class="img-center" src=' + data.image_url + 'alt="image of place"></img>'
+                    );
+
+                    // center the map on the marker
+                    map.setCenter(place.marker().getPosition());
+
+                    // bounce marker
+                    self.markerBounce(place.marker());
+                }
+            })} else {
             // if no new API call is needed then just set #infoWindow to display the place clicked
-            // viewModel.setPlace(place);
-        // };
+            viewModel.setPlace(place);
+            // INFOWINDOW.SETCONTENT WITH DATA VALUES
+            infoWindow.setContent('<h1>' + data.name + '</h1>' + '<ul>' +
+                '<li>' + data.location.address[0] + '</li>' +
+                '<li>' + data.display_phone + '</li>' + '</ul>' +
+                '<a' + data.url + '>Website</a>' +
+                '<img class="img-center" src=' + data.image_url + 'alt="image of place"></img>'
+            );
+            };
 
         // create a new infoWindow
-        var infoWindow = new google.maps.InfoWindow({
+        //var infoWindow = new google.maps.InfoWindow({
+
             // set the content to html element with id infoWindow
-            content: $('#infoWindow').html(),
+            // content: $('#infoWindow').html(),
+
             // set maxWidth to 300px (over riding 200px)
-            maxWidth: 300
-        });
+            //maxWidth: 300
+        // });
 
         // center the map on the marker
-        map.setCenter(place.marker().getPosition());
+        // map.setCenter(place.marker().getPosition());
 
         // bounce marker
-        self.markerBounce(place.marker());
+        // self.markerBounce(place.marker());
 
         // Open info window
-        infoWindow.open(map, place.marker());
-    },
+        // infoWindow.open(map, place.marker());
+    }
 
     // create ko.observable bound with search bar.
     self.userInput = ko.observable('');
@@ -227,6 +232,9 @@ function initialize() {
 
     // Sets the boundaries of the map based on pin locations
     window.mapBounds = new google.maps.LatLngBounds();
+
+    infoWindow = new google.maps.InfoWindow({
+    });
 };
 
 function createMapMarker(searchResults, place) {
@@ -259,15 +267,15 @@ function createMapMarker(searchResults, place) {
 
     // function to filter markers according to search.
     // http://stackoverflow.com/questions/29557938/removing-map-pin-with-search Janfoeh.
-    // place.isVisible.subscribe(function(currentState) {
-    //     if (currentState) {
-    //       place.marker().setMap(map);
-    //     } else {
-    //       place.marker().setMap(null);
-    //     }
-    // });
+    place.isVisible.subscribe(function(currentState) {
+        if (currentState) {
+          place.marker().setMap(map);
+        } else {
+          place.marker().setMap(null);
+        }
+    });
 
-    // place.isVisible(true);
+    place.isVisible(true);
 
 
     // bind the placeClicked function to the place parameter.
