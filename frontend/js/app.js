@@ -192,7 +192,6 @@ var ViewModel = function() {
 };
 
 var viewModel = new ViewModel()
-ko.applyBindings(viewModel);
 
 
 
@@ -217,6 +216,11 @@ function initialize() {
 
     service = new google.maps.places.PlacesService(map);
 
+    // add event listener that will close infowindow when map is clicked
+    google.maps.event.addListener(map, "click", function(event) {
+    infoWindow.close();
+    });
+
     viewModel.placeList().forEach(function(place) {
         // var place = initialPlaces[placeIndx]
         var placeName = place.name();
@@ -235,6 +239,9 @@ function initialize() {
 
     infoWindow = new google.maps.InfoWindow({
     });
+
+    // apply ko bindings after map has been initialized
+    ko.applyBindings(viewModel);
 };
 
 function createMapMarker(searchResults, place) {
