@@ -107,20 +107,31 @@ var ViewModel = function() {
             // Call the API for info
             var url = 'https://25j4uf5g5h.execute-api.us-west-2.amazonaws.com/active?business_id=' + place.businessId();
 
+            // var place = place;
+            console.log("place = ", place);
+
             $.when($.ajax({
                 type: 'GET',
                 url: url,
                 dataType: 'json'
+                // success: function(data){
+                // // fill or update values of the place object
+                // viewModel.fillPlaceValues(place, data);
+                // // populate #infoWindow with place clicked
+                // viewModel.setPlace(place);
+                // },
                 // force ajax request to complete before moving on.
                 // async: false,
             // handle error
             // }).error(function() {
                 // $infoWindowElem.text("oops, something went wrong. Yelp info can't be displayed right now. Try again later.");
-            })).done(function(place, data) {
+            })).done(function(data, place) {
+                    console.log("data = ", data);
+                    console.log("place = ", place);
                     // fill or update values of the place object
                     viewModel.fillPlaceValues(place, data);
                     // populate #infoWindow with place clicked
-                    viewModel.setPlace(place);
+                    // viewModel.setPlace(place);
             })}; // else {
             // if no new API call is needed then just set #infoWindow to display the place clicked
             // viewModel.setPlace(place);
@@ -159,6 +170,9 @@ var ViewModel = function() {
 
             // sets isVisible to true or false depending on whether match is found
             place.isVisible(doesMatch);
+
+            // console.log("place.marker = ", place.marker);
+            // place.marker.setVisible(doesMatch);
 
             return doesMatch;
         });
@@ -221,17 +235,18 @@ function createMapMarker(searchResults, place) {
     var searchResult = searchResults[0];
 
     // The next lines save location data from the search result object to local variables
-    var latitude = searchResult.geometry.location.lat(); // latitude from the place service
-    var longitude = searchResult.geometry.location.lng(); // longitude from the place service
-    var location = {lat: latitude, lng: longitude};
-    var name = searchResult.name; // name of the place from the place service
-    var bounds = window.mapBounds; // current boundaries of the map window
+    var latitude = searchResult.geometry.location.lat(), // latitude from the place service
+        longitude = searchResult.geometry.location.lng(), // longitude from the place service
+        location = {lat: latitude, lng: longitude},
+        name = searchResult.name, // name of the place from the place service
+        bounds = window.mapBounds; // current boundaries of the map window
 
     // marker is an object with additional data about the pin for a single location
     var marker = new google.maps.Marker({
         map: map,
         position: location,
         title: name,
+        // setVisible: true
     });
 
     // bind the markerBounce function to the place parameter.
@@ -244,15 +259,15 @@ function createMapMarker(searchResults, place) {
 
     // function to filter markers according to search.
     // http://stackoverflow.com/questions/29557938/removing-map-pin-with-search Janfoeh.
-    place.isVisible.subscribe(function(currentState) {
-        if (currentState) {
-          place.marker().setMap(map);
-        } else {
-          place.marker().setMap(null);
-        }
-    });
+    // place.isVisible.subscribe(function(currentState) {
+    //     if (currentState) {
+    //       place.marker().setMap(map);
+    //     } else {
+    //       place.marker().setMap(null);
+    //     }
+    // });
 
-    place.isVisible(true);
+    // place.isVisible(true);
 
 
     // bind the placeClicked function to the place parameter.

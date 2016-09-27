@@ -16,21 +16,12 @@
     <div class="container">
         <header class="row text-center">
             <h1 class="col-xs-12"> Neighborhood Map </h1>
-
-<!--             <div class="row">
-                <div class="col-xs-12 searchBar">
-                    <a href="#searchBar">
-                        <div class="input-group" id="searchBar">
-                            <input type="text" class="form-control" placeholder="Search" aria-describedby="basic-addon1" data-bind="textInput: userInput"></input>
-                        </div>
-                    </a>
-                </div>
-            </div> -->
             <div class="row">
                 <div class="col-xs-1">
                     <img src="images/hamburger.svg" alt="MENU" class="hamburger" data-bind="click: togglePlaceList">
                     </img>
                 </div>
+
                 <div class="col-xs-11">
                     <form>
                         <div class="form-group">
@@ -39,15 +30,6 @@
                     </form>
                 </div>
             </div>
-
-<!--             <div class="row">
-                <form class="form-inline">
-                    <div class="form">
-                        <input type="text" class="form-control" placeholder="Search" data-bind="textInput: userInput">
-                    </div>
-                    <button type="button" class="btn btn-default" role="button" data-bind="click: togglePlaceList">MENU</button>
-                </form>
-            </div> -->
 
             <div class="row">
                 <div class="col-xs-12 placeListVisible" data-bind="css: {open: placeListVisible() == true}">
@@ -63,15 +45,6 @@
         <div class="row">
             <div class="col-xs-12" id="map"></div>
         </div>
-<!--         <div class="row">
-            <div class="col-xs-12" data-bind="css: open">
-                <ul data-bind="foreach: placeList">
-                    <li data-bind="visible: isVisible">
-                        <div data-bind="text: name, click: $parent.placeClicked"></div>
-                    </li>
-                </ul>
-            </div>
-        </div> -->
     </div>
 
     <div id="infoWindow" class="container" data-bind="with: currentPlace">
