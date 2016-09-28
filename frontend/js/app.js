@@ -68,6 +68,9 @@ var ViewModel = function() {
     // obsevable to hide list of places or hise behind hamburger
     self.placeListVisible = ko.observable(false);
 
+    // observable for logging error messages to the UI
+    self.errorMessage = ko.observable();
+
     // function to toggle placeList
     self.togglePlaceList = function() {
         self.placeListVisible(!self.placeListVisible());
@@ -104,6 +107,7 @@ var ViewModel = function() {
         // OPEN INFOWINDOW AT MARKER
         infoWindow.open(map, place.marker());
         // check if the API was updated less than 15 minutes ago.
+        console.log(place.lastUpdated());
         if (place.lastUpdated() === null
             || Math.floor((Math.abs(new Date().getTime() - place.lastUpdated())/1000)/60) > 15) {
             // Call the API for info
@@ -119,45 +123,35 @@ var ViewModel = function() {
                         '<li>' + data.location.address[0] + '</li>' +
                         '<li>' + data.display_phone + '</li>' + '</ul>' +
                         '<a' + data.url + '>Website</a>' +
-                        '<img class="img-center" src=' + data.image_url + 'alt="image of place"></img>'
-                    );
+                        '<img class="img-center" src=' + data.image_url + 'alt="image of place"></img>');
 
+                    name = data.name;
+
+                    console.log("name = ", name);
                     // center the map on the marker
                     map.setCenter(place.marker().getPosition());
 
                     // bounce marker
                     self.markerBounce(place.marker());
+
+                    // fill place object with values for next use, so another ajax call doesn't have to be made
+                    self.fillPlaceValues(place, data);
                 }
+            }).error(function(){
+                // self.errorMessage("Oops something went wrong :( Yelp info failed to load, please try later.");
+                infoWindow.setContent("Oops something went wrong :( Yelp info failed to load, please try later.");
             })} else {
             // if no new API call is needed then just set #infoWindow to display the place clicked
             viewModel.setPlace(place);
             // INFOWINDOW.SETCONTENT WITH DATA VALUES
-            infoWindow.setContent('<h1>' + data.name + '</h1>' + '<ul>' +
-                '<li>' + data.location.address[0] + '</li>' +
-                '<li>' + data.display_phone + '</li>' + '</ul>' +
-                '<a' + data.url + '>Website</a>' +
-                '<img class="img-center" src=' + data.image_url + 'alt="image of place"></img>'
+            infoWindow.setContent('<h1>' + place.name() + '</h1>' + '<ul>' +
+                '<li>' + place.address() + '</li>' +
+                '<li>' + place.phone() + '</li>' + '</ul>' +
+                '<a' + place.url() + '>Website</a>' +
+                '<img class="img-center" src=' + place.image() + 'alt="image of place"></img>'
             );
             };
-
-        // create a new infoWindow
-        //var infoWindow = new google.maps.InfoWindow({
-
-            // set the content to html element with id infoWindow
-            // content: $('#infoWindow').html(),
-
-            // set maxWidth to 300px (over riding 200px)
-            //maxWidth: 300
-        // });
-
-        // center the map on the marker
-        // map.setCenter(place.marker().getPosition());
-
-        // bounce marker
-        // self.markerBounce(place.marker());
-
-        // Open info window
-        // infoWindow.open(map, place.marker());
+        place.lastUpdated(new Date());
     }
 
     // create ko.observable bound with search bar.

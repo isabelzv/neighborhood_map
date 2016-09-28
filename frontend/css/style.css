@@ -1,9 +1,20 @@
 #map {
 	height: 400px;
-};
+	position: absolute;
+}
+
+#errorMessage {
+	position: absolute;
+	top: 400px;
+	margin: auto;
+	/*vertical-align: center;*/
+	height: 30px;
+	width: 300px;
+	background-color: white;
+}
 
 /* div to wrap infowindow in to hide it off-screen */
-.outer {
+/*.outer {
 	overflow: hidden;
 	position: relative;
 }
@@ -14,7 +25,7 @@
 	padding: 15px;
 	right: -50px;
 	top: -200px;
-}
+}*/
 
 li {
 	list-style: none;
@@ -71,8 +82,11 @@ h2 {
 
 .hamburger {
 	/*float: left;*/
-	margin-left: 10px;
+	/*margin-left: 10px;*/
 	margin-top: 5px;
+	display: inline-block;
+	padding: 2em;
+	margin: -1em;
 }
 
 .placeListVisible {
