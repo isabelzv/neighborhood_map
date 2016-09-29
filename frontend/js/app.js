@@ -113,6 +113,9 @@ var ViewModel = function() {
             // Call the API for info
             var url = 'https://25j4uf5g5h.execute-api.us-west-2.amazonaws.com/active?business_id=' + place.businessId();
 
+            // reset lastUpdated
+            place.lastUpdated(new Date());
+
             $.ajax({
                 type: 'GET',
                 url: url,
@@ -122,20 +125,21 @@ var ViewModel = function() {
                     infoWindow.setContent('<h1>' + data.name + '</h1>' + '<ul>' +
                         '<li>' + data.location.address[0] + '</li>' +
                         '<li>' + data.display_phone + '</li>' + '</ul>' +
-                        '<a' + data.url + '>Website</a>' +
+                        '<a href=' + data.url + '>Website</a>' +
                         '<img class="img-center" src=' + data.image_url + 'alt="image of place"></img>');
 
                     name = data.name;
 
                     console.log("name = ", name);
                     // center the map on the marker
-                    map.setCenter(place.marker().getPosition());
+                    // map.setCenter(place.marker().getPosition());
 
                     // bounce marker
                     self.markerBounce(place.marker());
 
                     // fill place object with values for next use, so another ajax call doesn't have to be made
                     self.fillPlaceValues(place, data);
+                    console.log("place with values filled = ", place);
                 }
             }).error(function(){
                 // self.errorMessage("Oops something went wrong :( Yelp info failed to load, please try later.");
@@ -147,11 +151,10 @@ var ViewModel = function() {
             infoWindow.setContent('<h1>' + place.name() + '</h1>' + '<ul>' +
                 '<li>' + place.address() + '</li>' +
                 '<li>' + place.phone() + '</li>' + '</ul>' +
-                '<a' + place.url() + '>Website</a>' +
+                '<a href=' + place.url() + '>Website</a>' +
                 '<img class="img-center" src=' + place.image() + 'alt="image of place"></img>'
             );
             };
-        place.lastUpdated(new Date());
     }
 
     // create ko.observable bound with search bar.
