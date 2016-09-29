@@ -104,8 +104,10 @@ var ViewModel = function() {
 
     // main function to call API, fill in place info and open info window
     self.placeClicked = function(place) {
-        // OPEN INFOWINDOW AT MARKER
+        // Set content of infoWindow to "Loading" and open at marker
+        infoWindow.setContent('Loading...');
         infoWindow.open(map, place.marker());
+
         // check if the API was updated less than 15 minutes ago.
         console.log(place.lastUpdated());
         if (place.lastUpdated() === null
@@ -132,7 +134,7 @@ var ViewModel = function() {
 
                     console.log("name = ", name);
                     // center the map on the marker
-                    // map.setCenter(place.marker().getPosition());
+                    map.setCenter(place.marker().getPosition());
 
                     // bounce marker
                     self.markerBounce(place.marker());
