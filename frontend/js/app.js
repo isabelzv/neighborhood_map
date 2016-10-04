@@ -124,11 +124,20 @@ var ViewModel = function() {
                 dataType: 'json',
                 success: function(data){
                     // INFOWINDOW.SETCONTENT WITH DATA VALUES
-                    infoWindow.setContent('<h1>' + data.name + '</h1>' + '<ul>' +
+                    infoWindow.setContent('<div class="infoWindow">' +
+                        '<h1>' + data.name + '</h1>' +
+                        '<div class="row">' +
+                        '<div class="col-xs-6">' +
+                        '<ul>' +
                         '<li>' + data.location.address[0] + '</li>' +
                         '<li>' + data.display_phone + '</li>' + '</ul>' +
                         '<a href=' + data.url + '>Website</a>' +
-                        '<img class="img-center" src="' + data.image_url + '"alt="image of place"></img>');
+                        '</div>' +
+                        '<div class="col-xs-6">' +
+                        '<img class="img-center" src="' + data.image_url + '"alt="image of place"></img>' +
+                        '</div>' +
+                        '</div>' +
+                        '</div>');
 
                     // center the map on the marker
                     map.setCenter(place.marker().getPosition());
