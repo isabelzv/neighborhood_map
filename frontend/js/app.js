@@ -128,11 +128,8 @@ var ViewModel = function() {
                         '<li>' + data.location.address[0] + '</li>' +
                         '<li>' + data.display_phone + '</li>' + '</ul>' +
                         '<a href=' + data.url + '>Website</a>' +
-                        '<img class="img-center" src=' + data.image_url + 'alt="image of place"></img>');
+                        '<img class="img-center" src="' + data.image_url + '"alt="image of place"></img>');
 
-                    name = data.name;
-
-                    console.log("name = ", name);
                     // center the map on the marker
                     map.setCenter(place.marker().getPosition());
 
@@ -141,7 +138,8 @@ var ViewModel = function() {
 
                     // fill place object with values for next use, so another ajax call doesn't have to be made
                     self.fillPlaceValues(place, data);
-                    console.log("place with values filled = ", place);
+
+                    console.log("data = ", data);
                 }
             }).error(function(){
                 // self.errorMessage("Oops something went wrong :( Yelp info failed to load, please try later.");
