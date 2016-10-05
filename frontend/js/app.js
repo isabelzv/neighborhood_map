@@ -69,7 +69,7 @@ var ViewModel = function() {
     self.placeListVisible = ko.observable(false);
 
     // observable for logging error messages to the UI
-    self.errorMessage = ko.observable();
+    self.placeErrorMessage = ko.observable('');
 
     // function to toggle placeList
     self.togglePlaceList = function() {
@@ -176,10 +176,13 @@ var ViewModel = function() {
                     // fill place object with values for next use, so another ajax call doesn't have to be made
                     self.fillPlaceValues(place, data);
 
-                    console.log("data = ", data);
+                    // console.log("data = ", data);
                 }
             }).error(function(){
-                // self.errorMessage("Oops something went wrong :( Yelp info failed to load, please try later.");
+                // set content of infoWindow to display error message.
+                // I kept this error handling like this rather than using a text binding, because I couldn't work out how
+                // to bind into the infoWindow without creating an infoWindow elem offscreen and then loading that content
+                // into the infoWindow using js, which I was told specifically not to do in the previous review.
                 infoWindow.setContent("Oops something went wrong :( Yelp info failed to load, please try later.");
             })} else {
             // if no new API call is needed then just set #infoWindow to display the place clicked
@@ -232,11 +235,14 @@ function searchAndCreateMapMarker(request, place) {
     service.nearbySearch(request, function(result, status) {
         if (status == google.maps.places.PlacesServiceStatus.OK) {
             createMapMarker(result, place);
+        } else {
+            // display error message when Google Places API fails
+            viewModel.placeErrorMessage("sorry, Google Places failed to return information on one or more places...");
         }
     });
 };
 
-function initialize() {
+function initMap() {
     var boulder = new google.maps.LatLng(40.0274, -105.2519);
 
     map = new google.maps.Map(document.getElementById('map'), {
@@ -335,11 +341,15 @@ function createMapMarker(searchResults, place) {
     map.fitBounds(bounds);
     // center the map
     map.setCenter(bounds.getCenter());
+    // set map to resize to new bounds when window is resized
+    window.onresize = function() {
+        map.fitBounds(bounds); // `bounds` is a `LatLngBounds` object
+    };
 };
 
 
 // Calls the initializeMap() function when the page loads
-window.addEventListener('load', initialize);
+//window.addEventListener('load', initialize);
 
 // Vanilla JS way to listen for resizing of the window
 // and adjust map bounds
