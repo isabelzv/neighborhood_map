@@ -114,7 +114,7 @@ var ViewModel = function() {
                 addressElem = ''
             };
         if (phone) {
-            phoneElem = '<li>' + phone + '</li>' + '</ul>'} else {
+            phoneElem = '<li>' + phone + '</li>'} else {
                 phoneElem = ''
             };
         if (url) {
@@ -134,6 +134,7 @@ var ViewModel = function() {
         '<ul>' + addressElem
          + phoneElem
          + urlElem +
+        '</ul>' +
         '</div>' +
         '<div class="col-xs-6">' +
          imageElem +
