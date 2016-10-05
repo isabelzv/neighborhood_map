@@ -102,6 +102,23 @@ var ViewModel = function() {
         return url.substr(0, endIndex);
     },
 
+    self.setInfoWindowContent = function(name, address, phone, url, imageSrc) {
+        infoWindow.setContent('<div class="infoWindow">' +
+        '<h1 class="infoName">' + name + '</h1>' +
+        '<div class="row">' +
+        '<div class="col-xs-6">' +
+        '<ul>' +
+        '<li>' + address + '</li>' +
+        '<li>' + phone + '</li>' + '</ul>' +
+        '<a href=' + url + '>Website</a>' +
+        '</div>' +
+        '<div class="col-xs-6">' +
+        '<img class="img-center" src="' + imageSrc + '"alt="image of place"></img>' +
+        '</div>' +
+        '</div>' +
+        '</div>');
+    },
+
     // main function to call API, fill in place info and open info window
     self.placeClicked = function(place) {
         // Set content of infoWindow to "Loading" and open at marker
@@ -123,21 +140,8 @@ var ViewModel = function() {
                 url: url,
                 dataType: 'json',
                 success: function(data){
-                    // INFOWINDOW.SETCONTENT WITH DATA VALUES
-                    infoWindow.setContent('<div class="infoWindow">' +
-                        '<h1>' + data.name + '</h1>' +
-                        '<div class="row">' +
-                        '<div class="col-xs-6">' +
-                        '<ul>' +
-                        '<li>' + data.location.address[0] + '</li>' +
-                        '<li>' + data.display_phone + '</li>' + '</ul>' +
-                        '<a href=' + data.url + '>Website</a>' +
-                        '</div>' +
-                        '<div class="col-xs-6">' +
-                        '<img class="img-center" src="' + data.image_url + '"alt="image of place"></img>' +
-                        '</div>' +
-                        '</div>' +
-                        '</div>');
+                    // pass data values into helper function to set infoWindow content
+                    self.setInfoWindowContent(data.name, data.location.address[0], data.phone, data.url, data.image_url);
 
                     // center the map on the marker
                     map.setCenter(place.marker().getPosition());
@@ -156,13 +160,9 @@ var ViewModel = function() {
             })} else {
             // if no new API call is needed then just set #infoWindow to display the place clicked
             viewModel.setPlace(place);
-            // INFOWINDOW.SETCONTENT WITH DATA VALUES
-            infoWindow.setContent('<h1>' + place.name() + '</h1>' + '<ul>' +
-                '<li>' + place.address() + '</li>' +
-                '<li>' + place.phone() + '</li>' + '</ul>' +
-                '<a href=' + place.url() + '>Website</a>' +
-                '<img class="img-center" src=' + place.image() + 'alt="image of place"></img>'
-            );
+
+            // call helper function to set infoWindow content
+            self.setInfoWindowContent(place.name(), place.address(), place.phone(), place.url(), place.image());
             };
     }
 

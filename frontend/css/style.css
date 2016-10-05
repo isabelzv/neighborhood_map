@@ -53,7 +53,7 @@ div#style {
 
 .infoWindow {
 	/*position: absolute;*/
-	height: 200px;
+	max-height: 10px;
 	/*width: 300px;*/
 /*	padding: 15px;
 	right: -50px;
@@ -77,9 +77,11 @@ a {
 	text-align: left;
 	left: 0px;
 }
-/*h1 {
-	margin-top: 10px;
-}*/
+
+.infoName {
+	/*margin-top: 10px;*/
+	font-size: 30px;
+}
 
 h2 {
 	margin-top: 0px;
