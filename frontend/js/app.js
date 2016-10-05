@@ -103,17 +103,40 @@ var ViewModel = function() {
     },
 
     self.setInfoWindowContent = function(name, address, phone, url, imageSrc) {
+
+        // define html for elements based on whether parameter is valid
+        if (name) {
+            nameElem = '<h1 class="infoName">' + name + '</h1>'} else {
+                nameElem = ''
+            };
+        if (address) {
+            addressElem = '<li>' + address + '</li>'} else {
+                addressElem = ''
+            };
+        if (phone) {
+            phoneElem = '<li>' + phone + '</li>' + '</ul>'} else {
+                phoneElem = ''
+            };
+        if (url) {
+            urlElem = '<a href=' + url + '>Website</a>'} else {
+                urlElem = ''
+            };
+        if (imageSrc) {
+            imageElem = '<img class="img-center" src="' + imageSrc + '"alt="image of place"></img>'} else {
+                imageElem = ''
+            };
+
+        // set content of infoWindow using html
         infoWindow.setContent('<div class="infoWindow">' +
-        '<h1 class="infoName">' + name + '</h1>' +
+        nameElem +
         '<div class="row">' +
         '<div class="col-xs-6">' +
-        '<ul>' +
-        '<li>' + address + '</li>' +
-        '<li>' + phone + '</li>' + '</ul>' +
-        '<a href=' + url + '>Website</a>' +
+        '<ul>' + addressElem
+         + phoneElem
+         + urlElem +
         '</div>' +
         '<div class="col-xs-6">' +
-        '<img class="img-center" src="' + imageSrc + '"alt="image of place"></img>' +
+         imageElem +
         '</div>' +
         '</div>' +
         '</div>');
@@ -141,7 +164,7 @@ var ViewModel = function() {
                 dataType: 'json',
                 success: function(data){
                     // pass data values into helper function to set infoWindow content
-                    self.setInfoWindowContent(data.name, data.location.address[0], data.phone, data.url, data.image_url);
+                    self.setInfoWindowContent(data.name, data.location.address[0], data.display_phone, data.url, data.image_url);
 
                     // center the map on the marker
                     map.setCenter(place.marker().getPosition());
