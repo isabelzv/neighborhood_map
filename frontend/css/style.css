@@ -3,6 +3,7 @@ html, body {
 }
 header {
 	height: 100px;
+	/*position: absolute;*/
 }
 
 /*.container-fluid {
@@ -19,17 +20,18 @@ div#style {
 }*/
 
 #map {
-	height: 500px;/*
-	position: absolute;*/
+	/*height: 500px;*/
+
+	position: absolute;
 	/*margin: 1em;*/
 	width: 100%;
 	/*height: 100%;*/
-	padding: none;
+	padding-top: 120px;
 /*	float: none;
     margin: 0 auto;*/
     /*position: relative;*/
     /*position: relative;*/
-	top: 100;
+	top: 0;
 	bottom: 0;
 	right: 0;
 	left: 0;
@@ -140,6 +142,10 @@ h2 {
 .placeListVisible {
 	display: none
 }
+
+/*.placeErrorMessage {
+	display: none;
+}*/
 
 .open {
 	display: block;/*
