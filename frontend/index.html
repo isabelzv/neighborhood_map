@@ -7,8 +7,9 @@
     <link rel="stylesheet" href="images">
     <link rel="stylesheet" href="Bootstrap/css/bootstrap.css">
     <link rel="stylesheet" type="text/css" href="Bootstrap/css/bootstrap-theme.css">
-    <link rel="stylesheet" type="text/css" href="css/style.css">
+
     <script src="js/knockout_v3.4.0.js"></script>
+    <link rel="stylesheet" type="text/css" href="css/style.css">
 </head>
 <body>
         <main class="container-fluid text-center">
@@ -17,10 +18,10 @@
             <!-- </div> -->
         </main>
 
-    <header class="container-fluid text-center"  data-bind="css: {moveContainer: placeListVisible() == true}">
+    <header class="container-fluid text-center">
         <!-- <div class="header"> -->
             <div class="row">
-                <h1 class="col-xs-12"> Neighborhood Map </h1>
+                <h1 class="col-xs-12" data-bind="css: {hideTitle: placeListVisible() == true}"> Neighborhood Map </h1>
             </div>
             <div class="row">
                 <nav class="col-xs-1">
@@ -29,7 +30,7 @@
                 <div class="col-xs-11">
                     <form>
                         <div class="form-group">
-                            <input type="text" class="form-control" placeholder="Search" data-bind="textInput: userInput">
+                            <input type="text" class="form-control" data-bind="textInput: userInput, css: {moveSearch: placeListVisible() == true" placeholder="Search">
                         </div>
                     </form>
                 </div>
