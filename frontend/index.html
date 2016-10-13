@@ -11,6 +11,12 @@
     <script src="js/knockout_v3.4.0.js"></script>
 </head>
 <body>
+        <main class="container-fluid text-center">
+            <!-- <div class="row"> -->
+                <div id="map" class="map" data-bind="css: {moveMap: placeListVisible() == true}"></div>
+            <!-- </div> -->
+        </main>
+
     <header class="container-fluid text-center"  data-bind="css: {moveContainer: placeListVisible() == true}">
         <!-- <div class="header"> -->
             <div class="row">
@@ -45,11 +51,7 @@
             <!-- </menu> -->
 
 
-        <main class="container-fluid text-center">
-            <!-- <div class="row"> -->
-                <div id="map" class="map" data-bind="css: {moveMap: placeListVisible() == true}"></div>
-            <!-- </div> -->
-        </main>
+
 
 
 
