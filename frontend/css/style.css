@@ -11,6 +11,8 @@ header {
 
 .moveContainer {
 	margin-left: 100px;
+	/* move down so doesn't overlap with Map/Satellite buttons on map */
+	margin-top: 30px;
 }
 
 .map {
@@ -44,6 +46,10 @@ ul {
 	line-height: 2;
 }
 
+h3 {
+	padding-left: 15px;
+}
+
 .form-control {
 	width: 90%;
 	border: 1px solid black;
@@ -60,6 +66,10 @@ ul {
 .hamburger {
 	margin: -1em;
 	padding-left: 15px;
+}
+
+.hideHamburger {
+	display: none;
 }
 
 .placeListVisible {
