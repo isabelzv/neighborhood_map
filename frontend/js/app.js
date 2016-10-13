@@ -254,7 +254,13 @@ function initMap() {
 
     // add event listener that will close infowindow when map is clicked
     google.maps.event.addListener(map, "click", function(event) {
-    infoWindow.close();
+        infoWindow.close();
+    });
+
+    google.maps.event.addListener(map, "click", function(event) {
+        if (viewModel.placeListVisible() == true) {
+            viewModel.placeListVisible(false);
+        }
     });
 
     viewModel.placeList().forEach(function(place) {
@@ -312,9 +318,11 @@ function createMapMarker(searchResults, place) {
     // http://stackoverflow.com/questions/29557938/removing-map-pin-with-search Janfoeh.
     place.isVisible.subscribe(function(currentState) {
         if (currentState) {
-          place.marker().setMap(map);
+          //place.marker().setMap(map);
+          place.marker().setVisible(true);
         } else {
-          place.marker().setMap(null);
+          //place.marker().setMap(null);
+          place.marker().setVisible(false);
         }
     });
 
