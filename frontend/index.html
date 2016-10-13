@@ -24,13 +24,13 @@
                 <h1 class="col-xs-12" data-bind="css: {hideTitle: placeListVisible() == true}"> Neighborhood Map </h1>
             </div>
             <div class="row">
-                <nav class="col-xs-1">
-                    <img src="images/hamburger.svg" alt="MENU" class="hamburger" data-bind="click: togglePlaceList, css: {hideHamburger: placeListVisible() == true}"></img>
+                <nav class="col-xs-1" data-bind="click: togglePlaceList, css: {hideHamburger: placeListVisible() == true}">
+                    <img src="images/hamburger.svg" alt="MENU" class="hamburger"></img>
                 </nav>
                 <div class="col-xs-11">
                     <form>
                         <div class="form-group">
-                            <input type="text" class="form-control" data-bind="textInput: userInput, css: {moveSearch: placeListVisible() == true" placeholder="Search">
+                            <input type="text" class="form-control" data-bind="textInput: userInput, css: {moveSearch: placeListVisible() == true}" placeholder="Search"></input>
                         </div>
                     </form>
                 </div>
