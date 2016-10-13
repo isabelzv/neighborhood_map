@@ -31,6 +31,7 @@ header {
 }
 
 .moveMap {
+	/* move left 150px to make space for placeList (max-width 150) */
 	left: 150px;
 }
 
@@ -77,12 +78,13 @@ h3 {
 }
 
 .open {
+	position: absolute;
 	display: block;
 	color: red;
 	background-color: blue;
 	margin: 0px;
 	left: 0px;
 	padding-left: 0px;
-	margin-top: 20px;
 	max-width: 150px;
+	top: 0px;
 }
