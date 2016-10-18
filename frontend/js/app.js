@@ -356,6 +356,10 @@ function createMapMarker(searchResults, place) {
     };
 };
 
+function googleError(event) {
+    window.alert('Google Map failed to load. Please try reloading the page.');
+};
+
 
 // Calls the initializeMap() function when the page loads
 //window.addEventListener('load', initialize);
