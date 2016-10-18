@@ -136,7 +136,7 @@ var ViewModel = function() {
          + urlElem +
         '</ul>' +
         '</div>' +
-        '<div class="col-xs-6">' +
+        '<div class="col-xs-4">' +
          imageElem +
         '</div>' +
         '</div>' +
@@ -164,6 +164,7 @@ var ViewModel = function() {
                 url: url,
                 dataType: 'json',
                 success: function(data){
+                    console.log("data = ", data);
                     // pass data values into helper function to set infoWindow content
                     self.setInfoWindowContent(data.name, data.location.address[0], data.display_phone, data.url, data.image_url);
 
