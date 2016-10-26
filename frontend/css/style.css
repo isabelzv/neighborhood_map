@@ -55,8 +55,12 @@ ul {
 	line-height: 2;
 }
 
+/*.title {
+	margin-top: 50px;
+}*/
+
 h3 {
-	padding: 15px;
+	padding-top: 15px;
 }
 
 .form-control {
