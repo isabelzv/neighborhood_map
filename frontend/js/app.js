@@ -127,7 +127,7 @@
             infoWindow.setContent('<div class="infoWindow">' +
             nameElem +
             '<div class="row">' +
-            '<div class="col-xs-6">' +
+            '<div class="col-xs-6 addressPhoneWeb">' +
             '<ul>' + addressElem
              + phoneElem
              + urlElem +
@@ -166,7 +166,9 @@
                         self.setInfoWindowContent(data.name, data.location.address[0], data.display_phone, data.url, data.image_url);
 
                         // center the map on the marker
-                        map.setCenter(place.marker().getPosition());
+                        // map.setCenter(place.marker().getPosition());
+                        // offsetCenter(map.getCenter(),0,-100);
+                        offsetCenter(place.marker().getPosition(),0,-150);
 
                         // bounce marker
                         self.markerBounce(place.marker());
@@ -184,6 +186,7 @@
                     infoWindow.setContent("Oops something went wrong :( Yelp info failed to load, please try later.");
                 })} else {
                 // if no new API call is needed then just set #infoWindow to display the place clicked
+                // IS THIS REALLY NEEDED??????
                 viewModel.setPlace(place);
 
                 // call helper function to set infoWindow content
@@ -243,6 +246,32 @@
         });
     };
 
+    // helper function to offset center of map when marker is clicked to avoid overlap of infowindow and title/search
+    // http://stackoverflow.com/questions/10656743/how-to-offset-the-center-point-in-google-maps-api-v3
+    function offsetCenter(latlng, offsetx, offsety) {
+
+        // latlng is the apparent/original centre-point
+        // offsetx is the distance you want that point to move to the right, in pixels
+        // offsety is the distance you want that point to move upwards, in pixels
+        // offset can be negative
+        // offsetx and offsety are both optional
+
+        var scale = Math.pow(2, map.getZoom());
+
+        var worldCoordinateCenter = map.getProjection().fromLatLngToPoint(latlng);
+        var pixelOffset = new google.maps.Point((offsetx/scale) || 0,(offsety/scale) ||0);
+
+        var worldCoordinateNewCenter = new google.maps.Point(
+            worldCoordinateCenter.x - pixelOffset.x,
+            worldCoordinateCenter.y + pixelOffset.y
+        );
+
+        var newCenter = map.getProjection().fromPointToLatLng(worldCoordinateNewCenter);
+
+        map.setCenter(newCenter);
+
+    };
+
     function initMap() {
         var boulder = new google.maps.LatLng(40.0274, -105.2519);
 
@@ -283,6 +312,7 @@
         window.mapBounds = new google.maps.LatLngBounds();
 
         infoWindow = new google.maps.InfoWindow({
+            maxWidth: 250
         });
 
         // apply ko bindings after map has been initialized
@@ -333,11 +363,6 @@
 
         place.isVisible(true);
 
-        console.log("place = ", place);
-        console.log("viewModel.placeClicked.bind = ", viewModel.placeClicked.bind);
-        console.log("self = ", self);
-        console.log("this = ", this);
-
         // bind the placeClicked function to the place parameter.
         // boundPlaceClicked = viewModel.placeClicked.bind(null, place);
 
@@ -358,6 +383,10 @@
         map.fitBounds(bounds);
         // center the map
         map.setCenter(bounds.getCenter());
+
+        // ofsets center of map to take into account title/search
+        // offsetCenter(map.getCenter(),0,-100);
+
         // set map to resize to new bounds when window is resized
         window.onresize = function() {
             map.fitBounds(bounds); // `bounds` is a `LatLngBounds` object
