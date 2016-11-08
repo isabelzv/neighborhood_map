@@ -70,7 +70,7 @@ h3 {
 .form-control {
 	width: 90%;
 	border: 1px solid black;
-	margin: -1em;
+	/*margin: -1em;*/
 	display: inline;
 }
 
@@ -127,3 +127,9 @@ h3 {
 	max-width: 150px;
 	top: 15px;
 }
+
+/*@media only screen and (max-width: 500px) {
+    h1 {
+      	margin-top: 50px;
+    }
+}*/
