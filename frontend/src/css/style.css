@@ -117,10 +117,8 @@ h3 {
 .open {
 	position: absolute;
 	display: block;
-	/*color: red;*/
-	/*background-color: blue;*/
-	margin-left,
-	margin-bottom,
+	margin-left;
+	margin-bottom;
 	margin-right: 0px;
 	left: 0px;
 	padding-left: 15px;
