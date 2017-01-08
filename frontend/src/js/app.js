@@ -1,9 +1,15 @@
 /*(function() {*/
+    // Hint JsHint to ignore these variables which are included in html
+    /*global ko*/
+    /*global google*/
+    /*global console*/
+    /*global window*/
+    /*global document*/
+
     "use strict";
     // declare gloabal variables
     var map;
     var infoWindow;
-
 
     // grab infowindow elem for error handling purposes
     var $infoWindowElem = $('#infoWindow');
@@ -113,29 +119,24 @@
 
             // define html for elements based on whether parameter is valid
             if (name) {
-                nameElem = '<h1 class="infoName">' + name + '</h1>'};
+                nameElem = '<h1 class="infoName">' + name + '</h1>';}
             if (address) {
-                addressElem = '<li>' + address + '</li>'};
+                addressElem = '<li>' + address + '</li>';}
             if (phone) {
-                phoneElem = '<li>' + phone + '</li>'};
+                phoneElem = '<li>' + phone + '</li>';}
             if (url) {
-                urlElem = '<a href=' + url + '>Website</a>'};
+                urlElem = '<a href=' + url + '>Website</a>';}
             if (imageSrc) {
-                imageElem = '<img class="img-center" src="' + imageSrc + '"alt="image of place"></img>'};
+                imageElem = '<img class="img-center" src="' + imageSrc + '"alt="image of place"></img>';}
 
             // set content of infoWindow using html
             infoWindow.setContent('<div class="infoWindow">' +
             nameElem +
             '<div class="row">' +
             '<div class="col-xs-6 addressPhoneWeb">' +
-            '<ul>' + addressElem
-             + phoneElem
-             + urlElem +
-            '</ul>' +
+            '<ul>' + addressElem + phoneElem + urlElem + '</ul>' +
             '</div>' +
-            '<div class="col-xs-4">' +
-             imageElem +
-            '</div>' +
+            '<div class="col-xs-4">' + imageElem + '</div>' +
             '</div>' +
             '</div>');
         },
@@ -148,8 +149,7 @@
 
             // check if the API was updated less than 15 minutes ago.
             console.log(place.lastUpdated());
-            if (place.lastUpdated() === null
-                || Math.floor((Math.abs(new Date().getTime() - place.lastUpdated())/1000)/60) > 15) {
+            if (place.lastUpdated() === null || Math.floor((Math.abs(new Date().getTime() - place.lastUpdated())/1000)/60) > 15) {
                 // Call the API for info
                 var url = 'https://25j4uf5g5h.execute-api.us-west-2.amazonaws.com/active?business_id=' + place.businessId();
 
@@ -184,14 +184,14 @@
                     // to bind into the infoWindow without creating an infoWindow elem offscreen and then loading that content
                     // into the infoWindow using js, which I was told specifically not to do in the previous review.
                     infoWindow.setContent("Oops something went wrong :( Yelp info failed to load, please try later.");
-                })} else {
+                });} else {
                 // if no new API call is needed then just set #infoWindow to display the place clicked
                 // IS THIS REALLY NEEDED??????
                 viewModel.setPlace(place);
 
                 // call helper function to set infoWindow content
                 self.setInfoWindowContent(place.name(), place.address(), place.phone(), place.url(), place.image());
-                };
+                }
         }
 
         // create ko.observable bound with search bar.

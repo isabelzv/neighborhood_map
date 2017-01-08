@@ -25,7 +25,7 @@ gulp.task('clean_dist', function() {
 
 // Lint Tasks
 gulp.task('lint_js', function() {
-    return gulp.src(['src/js/*.js', 'src/Bootstrap/js/*.js'])
+    return gulp.src(['src/js/app.js', 'src/js/callYelp.js'])
         .pipe(gp_jshint())
         .pipe(gp_jshint.reporter('default'));
 });
@@ -36,9 +36,9 @@ gulp.task('lint_html', function() {
 });
 
 gulp.task('lint_css', function() {
-  gulp.src(['src/css/*.css', 'src/Bootstrap/css/*.css'])
+  gulp.src(['src/css/*.css'])
     .pipe(gp_csslint())
-    .pipe(gp_csslint.reporter());
+    .pipe(gp_csslint.formatter('compact'));
 });
 
 gulp.task('lint', ['lint_html', 'lint_js', 'lint_css']);
@@ -97,4 +97,4 @@ gulp.task('minify_images', function () {
 gulp.task('minify', ['minify_html', 'minify_css', 'minify_images', 'minify_js', 'minify_bootstrap_css', 'minify_bootstrap_js']);
 
 // Default Task
-gulp.task('default', ['clean_dist', 'minify']);
+gulp.task('default', ['clean_dist', 'lint', 'minify']);
