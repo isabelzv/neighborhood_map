@@ -34,3 +34,10 @@ frontend/node_modules
 .node_repl_history
 
 yelp_lambda/*.zip
+
+#Dist directory
+frontend/dist
+
+#.DS files
+.DS_*
+

@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, height=device-height, initial-scale=1">
+    <title>Neighborhood Map</title>
+    <link rel="stylesheet" href="images">
+    <link rel="stylesheet" href="Bootstrap/css/bootstrap.css">
+    <link rel="stylesheet" type="text/css" href="Bootstrap/css/bootstrap-theme.css">
+
+    <script src="js/knockout_v3.4.0.js"></script>
+    <link rel="stylesheet" type="text/css" href="css/style.css">
+</head>
+<body>
+        <main class="container-fluid text-center">
+            <!-- <div class="row"> -->
+                <div id="map" class="map" data-bind="css: {moveMap: placeListVisible() == true}"></div>
+            <!-- </div> -->
+        </main>
+
+    <header class="container-fluid text-center">
+        <!-- <div class="header"> -->
+            <div class="row">
+                <h1 class="col-xs-12 title" data-bind="css: {hideTitle: placeListVisible() == true}"> Neighborhood Map </h1>
+            <!-- </div>
+            <div class="row"> -->
+                <nav class="col-xs-1" data-bind="click: togglePlaceList, css: {hideHamburger: placeListVisible() == true}">
+                    <img src="images/hamburger.svg" alt="MENU" class="hamburger"></img>
+                </nav>
+                <div class="col-xs-11">
+                    <form>
+                        <div class="form-group">
+                            <input type="text" class="form-control" data-bind="textInput: userInput, css: {moveSearch: placeListVisible() == true}" placeholder="Search Boulder">
+                        </div>
+                    </form>
+                </div>
+            </div>
+            <figure class="row">
+                <div class="col-xs-12" data-bind="text: placeErrorMessage"></div>
+            </figure>
+        <!-- </div> -->
+    </header>
+            <!-- <menu class="row"> -->
+                <div class="placeListVisible" data-bind="css: {open: placeListVisible() == true}">
+                    <h3>Places</h3>
+                    <ul class="placeList" data-bind="foreach: placeList">
+                        <li data-bind="visible: isVisible">
+                            <div data-bind="text: name, click: $parent.placeClicked"></div>
+                        </li>
+                    </ul>
+                </div>
+            <!-- </menu> -->
+
+
+
+
+
+
+    <script src="js/jquery_min.js"></script>
+    <script src="js/app.js"></script>
+    <script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBgeijN84n5eVGRiv11FTaxUqHGPwMuJmU&libraries=places&callback=initMap" onerror="googleError()"></script>
+
+</body>
+</html>

@@ -1,16 +1,19 @@
 {
   "devDependencies": {
+    "del": "^2.2.2",
     "gulp": "^3.5.2",
-    "jshint":"",
-    "gulp-jshint":"",
-    "gulp-concat":"",
-    "gulp-uglify":"",
-    "gulp-rename":"",
-    "gulp-sourcemaps":"",
-    "gulp-htmlmin":"",
-    "gulp-csso":"",
-    "gulp-html5-lint":"",
-    "gulp-csslint":""
+    "gulp-concat": "",
+    "gulp-csslint": "",
+    "gulp-csso": "",
+    "gulp-html5-lint": "",
+    "gulp-htmlmin": "",
+    "gulp-jshint": "",
+    "gulp-rename": "",
+    "gulp-sourcemaps": "",
+    "gulp-uglify": "",
+    "gulp-imagemin": "",
+    "jshint": "",
+    "imagemin-pngquant":""
   },
   "scripts": {
     "test": "gulp test",
