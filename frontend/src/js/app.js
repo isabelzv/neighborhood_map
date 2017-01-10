@@ -250,9 +250,11 @@ function offsetCenter(latlng, offsetx, offsety) {
 
 }
 
+// function called from html via Google Maps callback, once map has loaded
 function initMap() {
    'use strict';
 
+    // define center of map
     var boulder = new google.maps.LatLng(40.0274, -105.2519);
 
     // tell map where to go on page, where to center on (boulder) and zoom level
@@ -331,16 +333,16 @@ function createMapMarker(searchResults, place) {
     // http://stackoverflow.com/questions/29557938/removing-map-pin-with-search Janfoeh.
     place.isVisible.subscribe(function(currentState) {
         if (currentState) {
-          //place.marker().setMap(map);
           place.marker().setVisible(true);
         } else {
-          //place.marker().setMap(null);
           place.marker().setVisible(false);
         }
     });
 
     place.isVisible(true);
 
+    // add event listener to marker, which calls placeClicked with the place linked to that
+    // marker as the parameter.
     google.maps.event.addListener(marker, 'click', viewModel.placeClicked.bind(null, place));
 
     // this is where the pin actually gets added to the map.
@@ -351,15 +353,13 @@ function createMapMarker(searchResults, place) {
     // center the map
     map.setCenter(bounds.getCenter());
 
-    // ofsets center of map to take into account title/search
-    // offsetCenter(map.getCenter(),0,-100);
-
     // set map to resize to new bounds when window is resized
     window.onresize = function() {
         map.fitBounds(bounds); // `bounds` is a `LatLngBounds` object
     };
 }
 
+// function to be called if Google Maps api doesn't load.
 function googleError(event) {
     window.alert('Google Map failed to load. Please try reloading the page.');
 }
