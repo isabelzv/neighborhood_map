@@ -7,10 +7,10 @@
 /*global $*/
 /*global setTimeout*/
 
-// "use strict";
 // declare gloabal variables
 var map;
 var infoWindow;
+var service;
 
 // essential initial place info.
 var initialPlaces = [
@@ -58,38 +58,33 @@ var ViewModel = function() {
 
     var self = this;
 
+    // create observableArray of places.
     self.placeList = ko.observableArray([]);
 
+    // create a new ko Observable for each place and push it into
+    // placeList observableArray.
     initialPlaces.forEach(function(placeItem) {
         self.placeList.push(new Place(placeItem));
     });
 
-    self.currentPlace = ko.observable(self.placeList()[0]);
-
-    // places that have visible markers and li
+    // create observaleArray of places with visible markers and li.
     self.visiblePlaces = ko.observableArray();
 
-    // push all place objects into visible places to start.
+    // push all place objects into visiblePlaces to start.
     initialPlaces.forEach(function(place) {
         self.visiblePlaces.push(place);
     });
 
-    // obsevable to hide list of places or hise behind hamburger
+    // obsevable to show list of places or hide behind hamburger.
     self.placeListVisible = ko.observable(false);
 
-    // observable for logging error messages to the UI
+    // observable for logging error messages to the UI.
     self.placeErrorMessage = ko.observable('');
 
-    // function to toggle placeList
+    // function to toggle placeList visible/hidden.
     self.togglePlaceList = function() {
         self.placeListVisible(!self.placeListVisible());
         console.log(self.placeListVisible());
-    },
-
-    // helper function for placeClicked
-    // change place occupying infoWindow
-    self.setPlace = function(clickedPlace) {
-        self.currentPlace(clickedPlace);
     },
 
     // helper function for placeClicked
@@ -135,7 +130,7 @@ var ViewModel = function() {
         infoWindow.setContent('<div class="infoWindow">' +
         nameElem +
         '<div class="row">' +
-        '<div class="col-xs-6 addressPhoneWeb">' +
+        '<div class="col-xs-6">' +
         '<ul>' + addressElem + phoneElem + urlElem + '</ul>' +
         '</div>' +
         '<div class="col-xs-4">' + imageElem + '</div>' +
@@ -167,8 +162,6 @@ var ViewModel = function() {
                     self.setInfoWindowContent(data.name, data.location.address[0], data.display_phone, data.url, data.image_url);
 
                     // center the map on the marker
-                    // map.setCenter(place.marker().getPosition());
-                    // offsetCenter(map.getCenter(),0,-100);
                     offsetCenter(place.marker().getPosition(),0,-150);
 
                     // bounce marker
@@ -176,8 +169,6 @@ var ViewModel = function() {
 
                     // fill place object with values for next use, so another ajax call doesn't have to be made
                     self.fillPlaceValues(place, data);
-
-                    // console.log("data = ", data);
                 }
             }).error(function(){
                 // set content of infoWindow to display error message.
@@ -186,10 +177,6 @@ var ViewModel = function() {
                 // into the infoWindow using js, which I was told specifically not to do in the previous review.
                 infoWindow.setContent("Oops something went wrong :( Yelp info failed to load, please try later.");
             });} else {
-            // if no new API call is needed then just set #infoWindow to display the place clicked
-            // IS THIS REALLY NEEDED??????
-            viewModel.setPlace(place);
-
             // call helper function to set infoWindow content
             self.setInfoWindowContent(place.name(), place.address(), place.phone(), place.url(), place.image());
             }
@@ -211,9 +198,6 @@ var ViewModel = function() {
             // sets isVisible to true or false depending on whether match is found
             place.isVisible(doesMatch);
 
-            // console.log("place.marker = ", place.marker);
-            // place.marker.setVisible(doesMatch);
-
             return doesMatch;
         });
     });
@@ -226,14 +210,14 @@ var ViewModel = function() {
     };
 };
 
+// create new ViewModel
 var viewModel = new ViewModel();
 
-var service;
-// var marker;
 
 function searchAndCreateMapMarker(request, place) {
-   'use strict';
+    'use strict';
 
+    // use our service(boulder) map to do a search for placeName(request).
     service.nearbySearch(request, function(result, status) {
         if (status == google.maps.places.PlacesServiceStatus.OK) {
 
@@ -249,12 +233,6 @@ function searchAndCreateMapMarker(request, place) {
 // http://stackoverflow.com/questions/10656743/how-to-offset-the-center-point-in-google-maps-api-v3
 function offsetCenter(latlng, offsetx, offsety) {
    'use strict';
-
-    // latlng is the apparent/original centre-point
-    // offsetx is the distance you want that point to move to the right, in pixels
-    // offsety is the distance you want that point to move upwards, in pixels
-    // offset can be negative
-    // offsetx and offsety are both optional
 
     var scale = Math.pow(2, map.getZoom());
 
@@ -277,11 +255,13 @@ function initMap() {
 
     var boulder = new google.maps.LatLng(40.0274, -105.2519);
 
+    // tell map where to go on page, where to center on (boulder) and zoom level
     map = new google.maps.Map(document.getElementById('map'), {
         center: boulder,
         zoom: 15
     });
 
+    // create a new map.
     service = new google.maps.places.PlacesService(map);
 
     // add event listener that will close infowindow when map is clicked
@@ -289,16 +269,19 @@ function initMap() {
         infoWindow.close();
     });
 
+    // add event listener to close list of places (if open) on map click.
     google.maps.event.addListener(map, "click", function(event) {
         if (viewModel.placeListVisible() === true) {
             viewModel.placeListVisible(false);
         }
     });
 
+    // create a marker for each place in placeList.
     viewModel.placeList().forEach(function(place) {
-        // var place = initialPlaces[placeIndx]
         var placeName = place.name();
+        // store businessId as part of marker to use in API call when marker clicked.
         var businessId = place.businessId().substr(0);
+        // create request to pass into searchAndCreateMapMarker function.
         var request = {
             location: boulder,
             radius: '4000',
@@ -311,6 +294,7 @@ function initMap() {
     // Sets the boundaries of the map based on pin locations
     window.mapBounds = new google.maps.LatLngBounds();
 
+    // create a single infoWindow object.
     infoWindow = new google.maps.InfoWindow({
         maxWidth: 250
     });
@@ -321,8 +305,6 @@ function initMap() {
 
 function createMapMarker(searchResults, place) {
    'use strict';
-
-    //var self = this;
 
     // Only take first result
     var searchResult = searchResults[0];
@@ -342,11 +324,6 @@ function createMapMarker(searchResults, place) {
         // setVisible: true
     });
 
-    // bind the markerBounce function to the place parameter.
-    // boundMarkerBounce = markerBounce.bind(null, marker);
-
-    // marker.addListener('click', boundMarkerBounce);
-
     // Add marker info to place so that infowindow can open on li click
     place.marker(marker);
 
@@ -363,17 +340,6 @@ function createMapMarker(searchResults, place) {
     });
 
     place.isVisible(true);
-
-    // bind the placeClicked function to the place parameter.
-    // boundPlaceClicked = viewModel.placeClicked.bind(null, place);
-
-    // on click call placeClicked, which has been bound to the place object
-    // that was used to build that marker.
-    // google.maps.event.addListener(marker, 'click', function(){
-    //     boundPlaceClicked;
-    //     map.setCenter(marker.getPosition());
-    // });
-
 
     google.maps.event.addListener(marker, 'click', viewModel.placeClicked.bind(null, place));
 
