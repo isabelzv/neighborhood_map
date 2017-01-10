@@ -5,15 +5,15 @@
     "gulp-concat": "",
     "gulp-csslint": "",
     "gulp-csso": "",
-    "gulp-html5-lint": "",
+    "gulp-html5-lint": "^1.1.0",
     "gulp-htmlmin": "",
+    "gulp-imagemin": "",
     "gulp-jshint": "",
     "gulp-rename": "",
     "gulp-sourcemaps": "",
     "gulp-uglify": "",
-    "gulp-imagemin": "",
-    "jshint": "",
-    "imagemin-pngquant":""
+    "imagemin-pngquant": "",
+    "jshint": ""
   },
   "scripts": {
     "test": "gulp test",
