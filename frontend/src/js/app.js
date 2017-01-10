@@ -1,18 +1,19 @@
-/*(function() {*/
+// (function () {
+//    'use strict';
+
     // Hint JsHint to ignore these variables which are included in html
     /*global ko*/
     /*global google*/
     /*global console*/
     /*global window*/
     /*global document*/
+    /*global $*/
+    /*global setTimeout*/
 
     "use strict";
     // declare gloabal variables
     var map;
     var infoWindow;
-
-    // grab infowindow elem for error handling purposes
-    var $infoWindowElem = $('#infoWindow');
 
     // essential initial place info.
     var initialPlaces = [
@@ -148,7 +149,6 @@
             infoWindow.open(map, place.marker());
 
             // check if the API was updated less than 15 minutes ago.
-            console.log(place.lastUpdated());
             if (place.lastUpdated() === null || Math.floor((Math.abs(new Date().getTime() - place.lastUpdated())/1000)/60) > 15) {
                 // Call the API for info
                 var url = 'https://25j4uf5g5h.execute-api.us-west-2.amazonaws.com/active?business_id=' + place.businessId();
@@ -192,10 +192,10 @@
                 // call helper function to set infoWindow content
                 self.setInfoWindowContent(place.name(), place.address(), place.phone(), place.url(), place.image());
                 }
-        }
+        },
 
         // create ko.observable bound with search bar.
-        self.userInput = ko.observable('');
+        self.userInput = ko.observable(''); // jshint ignore:line
 
         // http://stackoverflow.com/questions/29557938/removing-map-pin-with-search
         self.filterMarkers = ko.computed(function() {
@@ -225,7 +225,7 @@
         };
     };
 
-    var viewModel = new ViewModel()
+        var viewModel = new ViewModel();
 
 
 
@@ -236,15 +236,13 @@
         service.nearbySearch(request, function(result, status) {
             if (status == google.maps.places.PlacesServiceStatus.OK) {
 
-                console.log("searchAndCreateMapMarker place = ", place);
-
                 createMapMarker(result, place);
             } else {
                 // display error message when Google Places API fails
                 viewModel.placeErrorMessage("sorry, Google Places failed to return information on one or more places...");
             }
         });
-    };
+    }
 
     // helper function to offset center of map when marker is clicked to avoid overlap of infowindow and title/search
     // http://stackoverflow.com/questions/10656743/how-to-offset-the-center-point-in-google-maps-api-v3
@@ -270,7 +268,7 @@
 
         map.setCenter(newCenter);
 
-    };
+    }
 
     function initMap() {
         var boulder = new google.maps.LatLng(40.0274, -105.2519);
@@ -288,7 +286,7 @@
         });
 
         google.maps.event.addListener(map, "click", function(event) {
-            if (viewModel.placeListVisible() == true) {
+            if (viewModel.placeListVisible() === true) {
                 viewModel.placeListVisible(false);
             }
         });
@@ -303,8 +301,6 @@
                 name: placeName
             };
 
-            console.log("place in initMap = ", place);
-
             searchAndCreateMapMarker(request, place);
         });
 
@@ -317,14 +313,13 @@
 
         // apply ko bindings after map has been initialized
         ko.applyBindings(viewModel);
-    };
+    }
 
     function createMapMarker(searchResults, place) {
-        // Only take first result
-        var self = this;
-        var searchResult = searchResults[0];
-        /*var place = place;*/
+        //var self = this;
 
+        // Only take first result
+        var searchResult = searchResults[0];
 
         // The next lines save location data from the search result object to local variables
         var latitude = searchResult.geometry.location.lat(), // latitude from the place service
@@ -391,11 +386,11 @@
         window.onresize = function() {
             map.fitBounds(bounds); // `bounds` is a `LatLngBounds` object
         };
-    };
+    }
 
     function googleError(event) {
         window.alert('Google Map failed to load. Please try reloading the page.');
-    };
+    }
 
 
     // Calls the initializeMap() function when the page loads
@@ -412,5 +407,6 @@
     //    //optionally remove the 500 (which is time in milliseconds) of the
     //    //scrolling animation to remove the animation and make it instant
     //    $.scrollTo($('.searchBar'), 500);
-    // });
-/*}());*/
+
+//}()); //close use strict function
+
