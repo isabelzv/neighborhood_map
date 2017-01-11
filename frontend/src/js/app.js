@@ -40,8 +40,6 @@ var initialPlaces = [
 var Place = function(placeData) {
    'use strict';
 
-    var self = this;
-
     this.name = ko.observable(placeData.name);
     this.businessId = ko.observable(placeData.businessId);
     this.url = ko.observable(null);
@@ -323,7 +321,6 @@ function createMapMarker(searchResults, place) {
         map: map,
         position: location,
         title: name,
-        // setVisible: true
     });
 
     // Add marker info to place so that infowindow can open on li click
@@ -361,5 +358,6 @@ function createMapMarker(searchResults, place) {
 
 // function to be called if Google Maps api doesn't load.
 function googleError(event) {
+    'use strict';
     window.alert('Google Map failed to load. Please try reloading the page.');
 }
